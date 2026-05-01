@@ -5,6 +5,11 @@ import com.parcialdos.Repositoriros.ProyectoRepositorio;
 import com.parcialdos.Repositoriros.SprintRepositorio;
 import com.parcialdos.Repositoriros.TareaRepositorio;
 import com.parcialdos.Repositoriros.HistoriaUsuarioRepositorio;
+import com.parcialdos.Repositoriros.DefectoRepositorio;
+import com.parcialdos.Repositoriros.RequisitoRepositorio;
+import com.parcialdos.Repositoriros.CasoUsoRepositorio;
+import com.parcialdos.Repositoriros.AdrRepositorio;
+import com.parcialdos.Repositoriros.StackTecnologicoRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +23,11 @@ public class ProyectoWebControlador {
     @Autowired private SprintRepositorio sprintRepo;
     @Autowired private TareaRepositorio tareaRepo;
     @Autowired private HistoriaUsuarioRepositorio historiaRepo;
+    @Autowired private DefectoRepositorio defectoRepo;
+    @Autowired private RequisitoRepositorio requisitoRepo;
+    @Autowired private CasoUsoRepositorio casoUsoRepo;
+    @Autowired private AdrRepositorio adrRepo;
+    @Autowired private StackTecnologicoRepositorio stackRepo;
 
     @GetMapping
     public String listar(Model model) {
@@ -42,6 +52,11 @@ public class ProyectoWebControlador {
         model.addAttribute("sprints", sprintRepo.findByProyectoId(id));
         model.addAttribute("tareas", tareaRepo.findByProyectoId(id));
         model.addAttribute("historias", historiaRepo.findByProyectoId(id));
+        model.addAttribute("defectos", defectoRepo.findByProyectoId(id));
+        model.addAttribute("requisitos", requisitoRepo.findByProyectoId(id));
+        model.addAttribute("casosUso", casoUsoRepo.findByProyectoId(id));
+        model.addAttribute("adrs", adrRepo.findByProyectoId(id));
+        model.addAttribute("stacks", stackRepo.findByProyectoId(id));
         model.addAttribute("titulo", proyecto.getNombre());
         model.addAttribute("currentPage", "proyectos");
         return "detalleProyecto";

@@ -6,7 +6,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;}
-        :root{--bg:#0e0e1a;--bg2:#13131f;--card:#1a1a2e;--hover:#1f1f35;--border:#2a2a45;--txt:#e2e8f0;--txt2:#94a3b8;--muted:#64748b;--purple:#7c3aed;--purpleL:#a855f7;--purpleG:rgba(124,58,237,0.15);--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--blue:#3b82f6;--sidebar:250px;}
+        :root{--bg:#0e0e1a;--bg2:#13131f;--card:#1a1a2e;--hover:#1f1f35;--border:#2a2a45;--txt:#e2e8f0;--txt2:#94a3b8;--muted:#64748b;--purple:#7c3aed;--purpleL:#a855f7;--purpleG:rgba(124,58,237,0.15);--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--blue:#3b82f6;--cyan:#06b6d4;--sidebar:250px;}
         body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);display:flex;min-height:100vh;}
         .sidebar{width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;height:100vh;overflow-y:auto;}
         .logo{padding:24px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
@@ -25,12 +25,13 @@
         .content{padding:32px;}
         .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:none;transition:all .2s;}
         .btn-primary{background:var(--purple);color:white;}
+        .btn-primary:hover{background:#6d28d9;}
         .btn-ghost{background:transparent;color:var(--txt2);border:1px solid var(--border);}
         .btn-ghost:hover{background:var(--hover);}
         .btn-sm{padding:6px 12px;font-size:12px;}
         .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
         .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px;}
-        .card-title{font-size:15px;font-weight:600;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+        .card-title{font-size:15px;font-weight:600;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
         .info-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
         .info-row:last-child{border-bottom:none;}
         .info-label{font-size:12px;color:var(--muted);font-weight:500;}
@@ -42,14 +43,20 @@
         .b-blue{background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.3);}
         .b-purple{background:rgba(124,58,237,.15);color:#a855f7;border:1px solid rgba(124,58,237,.3);}
         .b-gray{background:rgba(100,116,139,.15);color:#94a3b8;border:1px solid rgba(100,116,139,.3);}
+        .b-cyan{background:rgba(6,182,212,.15);color:#06b6d4;border:1px solid rgba(6,182,212,.3);}
         .progress-bar{height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin-top:8px;}
         .progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--purple),var(--purpleL));}
+        .stats-mini{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+        .stat-mini{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;}
+        .stat-mini-value{font-size:24px;font-weight:700;margin-bottom:4px;}
+        .stat-mini-label{font-size:11px;color:var(--muted);}
         .table-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);}
         table{width:100%;border-collapse:collapse;background:var(--card);}
         thead th{background:var(--bg2);padding:10px 14px;text-align:left;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--border);}
         tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
         tbody tr:hover{background:var(--hover);}
         tbody td{padding:12px 14px;font-size:13px;}
+        .empty-mini{text-align:center;padding:20px;color:var(--muted);font-size:12px;}
         ::-webkit-scrollbar{width:6px;}
         ::-webkit-scrollbar-track{background:var(--bg);}
         ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
@@ -68,21 +75,23 @@
         <a href="/proyectos" class="nav-item active"><span>📁</span>Proyectos</a>
         <a href="/sprints" class="nav-item"><span>🏃</span>Sprints</a>
         <a href="/historias" class="nav-item"><span>📋</span>Historias</a>
-		<div class="nav-label">Análisis</div>
-		<a href="/requisitos" class="nav-item"><span>📄</span>Requisitos</a>
-		<a href="/casosuso" class="nav-item"><span>🔄</span>Casos de Uso</a>
-		<div class="nav-label">Arquitectura</div>
-		        <a href="/adrs" class="nav-item active"><span>🏗️</span>ADR</a>
-		        <a href="/stack" class="nav-item"><span>⚙️</span>Stack Tecnológico</a>
-		        <a href="/stack/dashboard" class="nav-item"><span>📊</span>Dashboard Arq.</a>
-		        
-		<div class="nav-label">Desarrollo</div>
+        <div class="nav-label">Análisis</div>
+        <a href="/requisitos" class="nav-item"><span>📄</span>Requisitos</a>
+        <a href="/casosuso" class="nav-item"><span>🔄</span>Casos de Uso</a>
+        <div class="nav-label">Arquitectura</div>
+        <a href="/adrs" class="nav-item"><span>🏗️</span>ADR</a>
+        <a href="/stack" class="nav-item"><span>⚙️</span>Stack Tecnológico</a>
+        <a href="/stack/dashboard" class="nav-item"><span>📊</span>Dashboard Arq.</a>
+        <div class="nav-label">Desarrollo</div>
         <a href="/tareas" class="nav-item"><span>✅</span>Tareas</a>
         <a href="/tareas/kanban" class="nav-item"><span>🗂️</span>Kanban</a>
         <div class="nav-label">Calidad</div>
         <a href="/defectos" class="nav-item"><span>🐛</span>Defectos</a>
     </nav>
-    <div class="sidebar-footer"><div>SIGPROD v1.0.0</div><div style="margin-top:4px;color:var(--green);font-size:11px;">● Sistema activo</div></div>
+    <div class="sidebar-footer">
+        <div>SIGPROD v1.0.0</div>
+        <div style="margin-top:4px;color:var(--green);font-size:11px;">● Sistema activo</div>
+    </div>
 </aside>
 <main class="main">
     <div class="topbar">
@@ -93,8 +102,45 @@
         </div>
     </div>
     <div class="content">
+
+        <!-- STATS MINI -->
+        <div class="stats-mini">
+            <div class="stat-mini">
+                <div class="stat-mini-value" style="color:var(--purple);" th:text="${historias.size()}">0</div>
+                <div class="stat-mini-label">Historias</div>
+            </div>
+            <div class="stat-mini">
+                <div class="stat-mini-value" style="color:var(--green);" th:text="${tareas.size()}">0</div>
+                <div class="stat-mini-label">Tareas</div>
+            </div>
+            <div class="stat-mini">
+                <div class="stat-mini-value" style="color:var(--yellow);" th:text="${sprints.size()}">0</div>
+                <div class="stat-mini-label">Sprints</div>
+            </div>
+            <div class="stat-mini">
+                <div class="stat-mini-value" style="color:var(--red);" th:text="${defectos.size()}">0</div>
+                <div class="stat-mini-label">Defectos</div>
+            </div>
+            <div class="stat-mini">
+                <div class="stat-mini-value" style="color:var(--blue);" th:text="${requisitos.size()}">0</div>
+                <div class="stat-mini-label">Requisitos</div>
+            </div>
+            <div class="stat-mini">
+                <div class="stat-mini-value" style="color:var(--cyan);" th:text="${casosUso.size()}">0</div>
+                <div class="stat-mini-label">Casos de Uso</div>
+            </div>
+            <div class="stat-mini">
+                <div class="stat-mini-value" style="color:var(--purpleL);" th:text="${adrs.size()}">0</div>
+                <div class="stat-mini-label">ADRs</div>
+            </div>
+            <div class="stat-mini">
+                <div class="stat-mini-value" style="color:var(--green);" th:text="${stacks.size()}">0</div>
+                <div class="stat-mini-label">Tecnologías</div>
+            </div>
+        </div>
+
         <div class="grid2">
-            <!-- INFO -->
+            <!-- INFO GENERAL -->
             <div class="card">
                 <div class="card-title">📋 Información General</div>
                 <div class="info-row"><span class="info-label">Cliente</span><span class="info-value" th:text="${proyecto.clienteNombre ?: '-'}">-</span></div>
@@ -131,40 +177,21 @@
             <div class="card">
                 <div class="card-title">📝 Descripción</div>
                 <p style="font-size:14px;color:var(--txt2);line-height:1.7;" th:text="${proyecto.descripcion ?: 'Sin descripción registrada.'}">-</p>
-                <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
-                        <div style="font-size:24px;font-weight:700;color:var(--purple);" th:text="${historias.size()}">0</div>
-                        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Historias</div>
-                    </div>
-                    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
-                        <div style="font-size:24px;font-weight:700;color:var(--green);" th:text="${tareas.size()}">0</div>
-                        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Tareas</div>
-                    </div>
-                    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
-                        <div style="font-size:24px;font-weight:700;color:var(--yellow);" th:text="${sprints.size()}">0</div>
-                        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Sprints</div>
-                    </div>
-                    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
-                        <div style="font-size:24px;font-weight:700;color:var(--cyan,#06b6d4);">
-                            <span th:text="${tareas.stream().filter(t -> 'DONE'.equals(t.estado)).count()}">0</span>
-                        </div>
-                        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Tareas Done</div>
-                    </div>
-                </div>
             </div>
         </div>
+
         <!-- SPRINTS -->
         <div class="card">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-                <div class="card-title" style="margin:0;border:none;padding:0;">🏃 Sprints</div>
-                <a href="/sprints/nuevo" class="btn btn-primary btn-sm">+ Sprint</a>
+            <div class="card-title">
+                <span>🏃 Sprints</span>
+                <a href="/sprints/nuevo" class="btn btn-sm btn-primary">+ Sprint</a>
             </div>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Sprint</th><th>Objetivo</th><th>Fecha Inicio</th><th>Fecha Fin</th><th>Estado</th></tr></thead>
+                    <thead><tr><th>Sprint</th><th>Objetivo</th><th>Inicio</th><th>Fin</th><th>Estado</th></tr></thead>
                     <tbody>
                         <tr th:each="s : ${sprints}">
-                            <td style="font-weight:600;" th:text="'Sprint ' + ${s.numero}">-</td>
+                            <td class="badge b-purple" th:text="'Sprint ' + ${s.numero}">-</td>
                             <td th:text="${s.objetivo ?: '-'}">-</td>
                             <td th:text="${s.fechaInicio ?: '-'}">-</td>
                             <td th:text="${s.fechaFin ?: '-'}">-</td>
@@ -177,18 +204,53 @@
                                 </span>
                             </td>
                         </tr>
-                        <tr th:if="${#lists.isEmpty(sprints)}">
-                            <td colspan="5" style="text-align:center;padding:20px;color:var(--muted);">No hay sprints registrados</td>
-                        </tr>
+                        <tr th:if="${#lists.isEmpty(sprints)}"><td colspan="5"><div class="empty-mini">No hay sprints registrados</div></td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
+
+        <!-- HISTORIAS -->
+        <div class="card">
+            <div class="card-title">
+                <span>📋 Historias de Usuario</span>
+                <a href="/historias/nuevo" class="btn btn-sm btn-primary">+ Historia</a>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Título</th><th>Prioridad</th><th>Puntos</th><th>Estado</th></tr></thead>
+                    <tbody>
+                        <tr th:each="h : ${historias}">
+                            <td style="font-weight:600;" th:text="${h.titulo}">-</td>
+                            <td>
+                                <span th:switch="${h.prioridadMoscow}">
+                                    <span th:case="'MUST'" class="badge b-red">MUST</span>
+                                    <span th:case="'SHOULD'" class="badge b-yellow">SHOULD</span>
+                                    <span th:case="'COULD'" class="badge b-blue">COULD</span>
+                                    <span th:case="*" class="badge b-gray" th:text="${h.prioridadMoscow}">-</span>
+                                </span>
+                            </td>
+                            <td><span class="badge b-purple" th:text="${h.estimacionPuntos != null ? h.estimacionPuntos + ' pts' : '-'}">-</span></td>
+                            <td>
+                                <span th:switch="${h.estado}">
+                                    <span th:case="'BACKLOG'" class="badge b-gray">Backlog</span>
+                                    <span th:case="'ACEPTADA'" class="badge b-green">✓ Aceptada</span>
+                                    <span th:case="'EN_PROGRESO'" class="badge b-yellow">En Progreso</span>
+                                    <span th:case="*" class="badge b-gray" th:text="${h.estado}">-</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(historias)}"><td colspan="4"><div class="empty-mini">No hay historias registradas</div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- TAREAS -->
         <div class="card">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-                <div class="card-title" style="margin:0;border:none;padding:0;">✅ Tareas Recientes</div>
-                <a href="/tareas/nuevo" class="btn btn-primary btn-sm">+ Tarea</a>
+            <div class="card-title">
+                <span>✅ Tareas</span>
+                <a href="/tareas/nuevo" class="btn btn-sm btn-primary">+ Tarea</a>
             </div>
             <div class="table-wrap">
                 <table>
@@ -215,13 +277,202 @@
                             </td>
                             <td th:text="${t.asignadoNombre ?: '-'}">-</td>
                         </tr>
-                        <tr th:if="${#lists.isEmpty(tareas)}">
-                            <td colspan="5" style="text-align:center;padding:20px;color:var(--muted);">No hay tareas registradas</td>
-                        </tr>
+                        <tr th:if="${#lists.isEmpty(tareas)}"><td colspan="5"><div class="empty-mini">No hay tareas registradas</div></td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
+
+        <!-- REQUISITOS -->
+        <div class="card">
+            <div class="card-title">
+                <span>📄 Requisitos</span>
+                <a href="/requisitos/nuevo" class="btn btn-sm btn-primary">+ Requisito</a>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Código</th><th>Nombre</th><th>Tipo</th><th>Prioridad</th><th>Estado</th></tr></thead>
+                    <tbody>
+                        <tr th:each="r : ${requisitos}">
+                            <td><span class="badge b-purple" th:text="${r.codigo ?: '-'}">-</span></td>
+                            <td style="font-weight:600;" th:text="${r.nombre}">-</td>
+                            <td>
+                                <span th:switch="${r.tipo}">
+                                    <span th:case="'FUNCIONAL'" class="badge b-blue">Funcional</span>
+                                    <span th:case="'NO_FUNCIONAL'" class="badge b-yellow">No Funcional</span>
+                                    <span th:case="*" class="badge b-gray" th:text="${r.tipo}">-</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span th:switch="${r.prioridad}">
+                                    <span th:case="'ALTA'" class="badge b-red">Alta</span>
+                                    <span th:case="'MEDIA'" class="badge b-yellow">Media</span>
+                                    <span th:case="'BAJA'" class="badge b-gray">Baja</span>
+                                    <span th:case="*" class="badge b-gray" th:text="${r.prioridad}">-</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span th:switch="${r.estado}">
+                                    <span th:case="'APROBADO'" class="badge b-green">✓ Aprobado</span>
+                                    <span th:case="'BORRADOR'" class="badge b-gray">Borrador</span>
+                                    <span th:case="'REVISION'" class="badge b-yellow">Revisión</span>
+                                    <span th:case="*" class="badge b-gray" th:text="${r.estado}">-</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(requisitos)}"><td colspan="5"><div class="empty-mini">No hay requisitos registrados</div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- CASOS DE USO -->
+        <div class="card">
+            <div class="card-title">
+                <span>🔄 Casos de Uso</span>
+                <a href="/casosuso/nuevo" class="btn btn-sm btn-primary">+ Caso de Uso</a>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Código</th><th>Nombre</th><th>Actor</th><th>Prioridad</th><th>Estado</th></tr></thead>
+                    <tbody>
+                        <tr th:each="cu : ${casosUso}">
+                            <td><span class="badge b-blue" th:text="${cu.codigo ?: '-'}">-</span></td>
+                            <td style="font-weight:600;" th:text="${cu.nombre}">-</td>
+                            <td><span class="badge b-purple" th:text="${cu.actor ?: '-'}">-</span></td>
+                            <td>
+                                <span th:switch="${cu.prioridad}">
+                                    <span th:case="'ALTA'" class="badge b-red">Alta</span>
+                                    <span th:case="'MEDIA'" class="badge b-yellow">Media</span>
+                                    <span th:case="'BAJA'" class="badge b-gray">Baja</span>
+                                    <span th:case="*" class="badge b-gray" th:text="${cu.prioridad}">-</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span th:switch="${cu.estado}">
+                                    <span th:case="'APROBADO'" class="badge b-green">✓ Aprobado</span>
+                                    <span th:case="'BORRADOR'" class="badge b-gray">Borrador</span>
+                                    <span th:case="'REVISION'" class="badge b-yellow">Revisión</span>
+                                    <span th:case="*" class="badge b-gray" th:text="${cu.estado}">-</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(casosUso)}"><td colspan="5"><div class="empty-mini">No hay casos de uso registrados</div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ADR -->
+        <div class="card">
+            <div class="card-title">
+                <span>🏗️ Decisiones Arquitectónicas (ADR)</span>
+                <a href="/adrs/nuevo" class="btn btn-sm btn-primary">+ ADR</a>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>#</th><th>Título</th><th>Estado</th><th>Arquitecto</th></tr></thead>
+                    <tbody>
+                        <tr th:each="a : ${adrs}">
+                            <td><span class="badge b-purple" th:text="'ADR-' + ${a.numero}">-</span></td>
+                            <td style="font-weight:600;" th:text="${a.titulo}">-</td>
+                            <td>
+                                <span th:switch="${a.estado}">
+                                    <span th:case="'ACEPTADA'" class="badge b-green">✓ Aceptada</span>
+                                    <span th:case="'PROPUESTA'" class="badge b-yellow">💡 Propuesta</span>
+                                    <span th:case="'OBSOLETA'" class="badge b-red">⚠️ Obsoleta</span>
+                                    <span th:case="*" class="badge b-gray" th:text="${a.estado}">-</span>
+                                </span>
+                            </td>
+                            <td th:text="${a.arquitectoNombre ?: '-'}">-</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(adrs)}"><td colspan="4"><div class="empty-mini">No hay ADRs registrados</div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- STACK TECNOLOGICO -->
+        <div class="card">
+            <div class="card-title">
+                <span>⚙️ Stack Tecnológico</span>
+                <a href="/stack/nuevo" class="btn btn-sm btn-primary">+ Tecnología</a>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Tecnología</th><th>Capa</th><th>Versión</th><th>Estado</th></tr></thead>
+                    <tbody>
+                        <tr th:each="s : ${stacks}">
+                            <td style="font-weight:600;" th:text="${s.nombre}">-</td>
+                            <td>
+                                <span th:switch="${s.capa}">
+                                    <span th:case="'FRONTEND'" class="badge b-blue">Frontend</span>
+                                    <span th:case="'BACKEND'" class="badge b-purple">Backend</span>
+                                    <span th:case="'BASE_DATOS'" class="badge b-green">Base Datos</span>
+                                    <span th:case="'INFRAESTRUCTURA'" class="badge b-yellow">Infraest.</span>
+                                    <span th:case="'DEVOPS'" class="badge b-cyan">DevOps</span>
+                                    <span th:case="*" class="badge b-gray" th:text="${s.capa}">-</span>
+                                </span>
+                            </td>
+                            <td th:text="${s.version != null ? 'v' + s.version : '-'}">-</td>
+                            <td>
+                                <span th:switch="${s.estado}">
+                                    <span th:case="'ACTIVO'" class="badge b-green">● Activo</span>
+                                    <span th:case="'DEPRECADO'" class="badge b-red">⚠️ Deprecado</span>
+                                    <span th:case="'EN_EVALUACION'" class="badge b-yellow">🔍 Evaluación</span>
+                                    <span th:case="*" class="badge b-gray" th:text="${s.estado}">-</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(stacks)}"><td colspan="4"><div class="empty-mini">No hay tecnologías registradas</div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- DEFECTOS -->
+        <div class="card">
+            <div class="card-title">
+                <span>🐛 Defectos</span>
+                <a href="/defectos/nuevo" class="btn btn-sm btn-primary">+ Defecto</a>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Título</th><th>Severidad</th><th>Prioridad</th><th>Estado</th></tr></thead>
+                    <tbody>
+                        <tr th:each="d : ${defectos}">
+                            <td style="font-weight:600;" th:text="${d.titulo}">-</td>
+                            <td>
+                                <span th:switch="${d.severidad}">
+                                    <span th:case="'CRITICO'" class="badge b-red">🔴 Crítico</span>
+                                    <span th:case="'MAYOR'" class="badge b-yellow">🟡 Mayor</span>
+                                    <span th:case="'MENOR'" class="badge b-blue">🔵 Menor</span>
+                                    <span th:case="*" class="badge b-gray" th:text="${d.severidad}">-</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span th:switch="${d.prioridad}">
+                                    <span th:case="'URGENTE'" class="badge b-red">Urgente</span>
+                                    <span th:case="'ALTA'" class="badge b-yellow">Alta</span>
+                                    <span th:case="'MEDIA'" class="badge b-blue">Media</span>
+                                    <span th:case="*" class="badge b-gray" th:text="${d.prioridad}">-</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span th:switch="${d.estado}">
+                                    <span th:case="'NUEVO'" class="badge b-red">● Nuevo</span>
+                                    <span th:case="'RESUELTO'" class="badge b-purple">● Resuelto</span>
+                                    <span th:case="'CERRADO'" class="badge b-green">● Cerrado</span>
+                                    <span th:case="*" class="badge b-yellow" th:text="${d.estado}">-</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(defectos)}"><td colspan="4"><div class="empty-mini">No hay defectos registrados</div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 </main>
 </body>
