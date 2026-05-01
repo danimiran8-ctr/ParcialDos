@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Historias | SIGPROD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        :root{--bg:#0e0e1a;--bg2:#13131f;--card:#1a1a2e;--hover:#1f1f35;--border:#2a2a45;--txt:#e2e8f0;--txt2:#94a3b8;--muted:#64748b;--purple:#7c3aed;--purpleL:#a855f7;--purpleG:rgba(124,58,237,0.15);--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--blue:#3b82f6;--sidebar:250px;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);display:flex;min-height:100vh;}
+        .sidebar{width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;height:100vh;overflow-y:auto;}
+        .logo{padding:24px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+        .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--purple),var(--purpleL));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+        .logo-txt{font-size:18px;font-weight:700;background:linear-gradient(135deg,#a855f7,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .logo-sub{font-size:10px;color:var(--muted);}
+        .nav{padding:16px 12px;flex:1;}
+        .nav-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;padding:8px 8px 6px;margin-top:8px;}
+        .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:var(--txt2);font-size:14px;font-weight:500;transition:all .2s;margin-bottom:2px;}
+        .nav-item:hover{background:var(--hover);color:var(--txt);}
+        .nav-item.active{background:var(--purpleG);color:var(--purpleL);border:1px solid rgba(124,58,237,.3);}
+        .sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);}
+        .main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;}
+        .topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+        .topbar-title{font-size:20px;font-weight:700;}
+        .content{padding:32px;}
+        .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:none;transition:all .2s;}
+        .btn-primary{background:var(--purple);color:white;}
+        .btn-primary:hover{background:#6d28d9;}
+        .btn-sm{padding:6px 12px;font-size:12px;}
+        .btn-ghost{background:transparent;color:var(--txt2);border:1px solid var(--border);}
+        .btn-ghost:hover{background:var(--hover);}
+        .btn-danger{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.3);}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:28px;}
+        .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;position:relative;overflow:hidden;transition:all .2s;}
+        .stat-card:hover{border-color:var(--purple);transform:translateY(-2px);}
+        .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+        .stat-card.purple::before{background:linear-gradient(90deg,var(--purple),var(--purpleL));}
+        .stat-card.green::before{background:linear-gradient(90deg,var(--green),#34d399);}
+        .stat-card.yellow::before{background:linear-gradient(90deg,var(--yellow),#fbbf24);}
+        .stat-card.red::before{background:linear-gradient(90deg,var(--red),#f87171);}
+        .stat-card.blue::before{background:linear-gradient(90deg,var(--blue),#60a5fa);}
+        .stat-label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
+        .stat-value{font-size:32px;font-weight:700;line-height:1;}
+        .stat-icon{position:absolute;top:16px;right:16px;font-size:28px;opacity:.12;}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;}
+        .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+        .card-title{font-size:15px;font-weight:600;}
+        .table-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);}
+        table{width:100%;border-collapse:collapse;background:var(--card);}
+        thead th{background:var(--bg2);padding:12px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--border);}
+        tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
+        tbody tr:hover{background:var(--hover);}
+        tbody td{padding:14px 16px;font-size:13px;}
+        .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+        .b-green{background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3);}
+        .b-yellow{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3);}
+        .b-red{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);}
+        .b-blue{background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.3);}
+        .b-purple{background:rgba(124,58,237,.15);color:#a855f7;border:1px solid rgba(124,58,237,.3);}
+        .b-gray{background:rgba(100,116,139,.15);color:#94a3b8;border:1px solid rgba(100,116,139,.3);}
+        .search-bar{margin-bottom:16px;}
+        .search-input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--txt);font-size:14px;outline:none;}
+        .search-input:focus{border-color:var(--purple);}
+        ::-webkit-scrollbar{width:6px;}
+        ::-webkit-scrollbar-track{background:var(--bg);}
+        ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+    </style>
+</head>
+<body>
+<aside class="sidebar">
+    <div class="logo">
+        <div class="logo-icon">⚡</div>
+        <div><div class="logo-txt">SIGPROD</div><div class="logo-sub">Gestión de Proyectos</div></div>
+    </div>
+    <nav class="nav">
+        <div class="nav-label">General</div>
+        <a href="/dashboard" class="nav-item"><span>🏠</span>Dashboard</a>
+        <div class="nav-label">Gestión</div>
+        <a href="/proyectos" class="nav-item"><span>📁</span>Proyectos</a>
+        <a href="/sprints" class="nav-item"><span>🏃</span>Sprints</a>
+        <a href="/historias" class="nav-item active"><span>📋</span>Historias</a>
+		<div class="nav-label">Análisis</div>
+		<a href="/requisitos" class="nav-item"><span>📄</span>Requisitos</a>
+		<a href="/casosuso" class="nav-item"><span>🔄</span>Casos de Uso</a>
+		<div class="nav-label">Arquitectura</div>
+		        <a href="/adrs" class="nav-item active"><span>🏗️</span>ADR</a>
+		        <a href="/stack" class="nav-item"><span>⚙️</span>Stack Tecnológico</a>
+		        <a href="/stack/dashboard" class="nav-item"><span>📊</span>Dashboard Arq.</a>
+		        
+		<div class="nav-label">Desarrollo</div>
+        <a href="/tareas" class="nav-item"><span>✅</span>Tareas</a>
+        <a href="/tareas/kanban" class="nav-item"><span>🗂️</span>Kanban</a>
+        <div class="nav-label">Calidad</div>
+        <a href="/defectos" class="nav-item"><span>🐛</span>Defectos</a>
+    </nav>
+    <div class="sidebar-footer">
+        <div>SIGPROD v1.0.0</div>
+        <div style="margin-top:4px;color:var(--green);font-size:11px;">● Sistema activo</div>
+    </div>
+</aside>
+<main class="main">
+    <div class="topbar">
+        <div class="topbar-title">📋 Historias de Usuario</div>
+        <a href="/historias/nuevo" class="btn btn-primary">+ Nueva Historia</a>
+    </div>
+    <div class="content">
+
+        <!-- STATS CORREGIDAS -->
+        <div class="stats-grid">
+            <div class="stat-card purple">
+                <div class="stat-icon">📋</div>
+                <div class="stat-label">Total</div>
+                <div class="stat-value" th:text="${historias.size()}">0</div>
+            </div>
+            <div class="stat-card yellow">
+                <div class="stat-icon">📥</div>
+                <div class="stat-label">Backlog</div>
+                <div class="stat-value" th:text="${#lists.size(historias.?[estado == 'BACKLOG'])}">0</div>
+            </div>
+            <div class="stat-card blue">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-label">En Sprint</div>
+                <div class="stat-value" th:text="${#lists.size(historias.?[estado == 'EN_SPRINT'])}">0</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-icon">✅</div>
+                <div class="stat-label">Aceptadas</div>
+                <div class="stat-value" th:text="${#lists.size(historias.?[estado == 'ACEPTADA'])}">0</div>
+            </div>
+            <div class="stat-card red">
+                <div class="stat-icon">❌</div>
+                <div class="stat-label">Rechazadas</div>
+                <div class="stat-value" th:text="${#lists.size(historias.?[estado == 'RECHAZADA'])}">0</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">📋 Lista de Historias</span>
+                <span style="font-size:12px;color:var(--muted);" th:text="${historias.size()} + ' historias'">0</span>
+            </div>
+            <div class="search-bar">
+                <input class="search-input" type="text" id="searchInput" placeholder="🔍 Buscar historia..." onkeyup="filtrar()"/>
+            </div>
+            <div class="table-wrap">
+                <table id="tablaHistorias">
+                    <thead>
+                        <tr>
+                            <th>Historia</th>
+                            <th>Como...</th>
+                            <th>Prioridad</th>
+                            <th>Puntos</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="h : ${historias}">
+                            <td>
+                                <div style="font-weight:600;" th:text="${h.titulo}">-</div>
+                            </td>
+                            <td style="max-width:200px;">
+                                <div style="font-size:12px;color:var(--txt2);" th:text="${h.comoRol != null ? 'Como ' + h.comoRol : '-'}">-</div>
+                            </td>
+                            <td>
+                                <span th:switch="${h.prioridadMoscow}">
+                                    <span th:case="'MUST'" class="badge b-red">MUST</span>
+                                    <span th:case="'SHOULD'" class="badge b-yellow">SHOULD</span>
+                                    <span th:case="'COULD'" class="badge b-blue">COULD</span>
+                                    <span th:case="'WONT'" class="badge b-gray">WON'T</span>
+                                    <span th:case="*" class="badge b-gray" th:text="${h.prioridadMoscow}">-</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge b-purple" th:text="${h.estimacionPuntos != null ? h.estimacionPuntos + ' pts' : '-'}">-</span>
+                            </td>
+                            <td>
+                                <span th:switch="${h.estado}">
+                                    <span th:case="'BACKLOG'" class="badge b-gray">Backlog</span>
+                                    <span th:case="'EN_SPRINT'" class="badge b-blue">En Sprint</span>
+                                    <span th:case="'EN_PROGRESO'" class="badge b-yellow">En Progreso</span>
+                                    <span th:case="'ACEPTADA'" class="badge b-green">✓ Aceptada</span>
+                                    <span th:case="'RECHAZADA'" class="badge b-red">✗ Rechazada</span>
+                                    <span th:case="*" class="badge b-gray" th:text="${h.estado}">-</span>
+                                </span>
+                            </td>
+                            <td>
+                                <div style="display:flex;gap:6px;">
+                                    <a th:href="@{/historias/{id}/editar(id=${h.id})}" class="btn btn-sm" style="background:rgba(124,58,237,.15);color:#a855f7;border:1px solid rgba(124,58,237,.3);">✏️</a>
+                                    <button onclick="aprobar(this)" th:data-id="${h.id}" th:if="${h.estado == 'EN_PROGRESO'}" class="btn btn-sm" style="background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3);">✓</button>
+                                    <button onclick="eliminar(this)" th:data-id="${h.id}" class="btn btn-sm btn-danger">🗑</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(historias)}">
+                            <td colspan="6" style="text-align:center;padding:40px;color:var(--muted);">
+                                No hay historias registradas.
+                                <a href="/historias/nuevo" style="color:var(--purpleL);">Crear una</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+function filtrar() {
+    const val = document.getElementById('searchInput').value.toLowerCase();
+    document.querySelectorAll('#tablaHistorias tbody tr').forEach(r => {
+        r.style.display = r.textContent.toLowerCase().includes(val) ? '' : 'none';
+    });
+}
+function aprobar(btn) {
+    const id = btn.getAttribute('data-id');
+    fetch('/api/historias/' + id + '/aprobar', {method: 'PATCH'})
+        .then(() => location.reload());
+}
+function eliminar(btn) {
+    const id = btn.getAttribute('data-id');
+    if (confirm('¿Eliminar esta historia?')) {
+        fetch('/api/historias/' + id, {method: 'DELETE'})
+            .then(() => location.reload());
+    }
+}
+</script>
+</body>
+</html>

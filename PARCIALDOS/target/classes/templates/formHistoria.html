@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Formulario Historia | SIGPROD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        :root{--bg:#0e0e1a;--bg2:#13131f;--card:#1a1a2e;--hover:#1f1f35;--border:#2a2a45;--txt:#e2e8f0;--txt2:#94a3b8;--muted:#64748b;--purple:#7c3aed;--purpleL:#a855f7;--purpleG:rgba(124,58,237,0.15);--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--sidebar:250px;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);display:flex;min-height:100vh;}
+        .sidebar{width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;height:100vh;overflow-y:auto;}
+        .logo{padding:24px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+        .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--purple),var(--purpleL));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+        .logo-txt{font-size:18px;font-weight:700;background:linear-gradient(135deg,#a855f7,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .logo-sub{font-size:10px;color:var(--muted);}
+        .nav{padding:16px 12px;flex:1;}
+        .nav-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;padding:8px 8px 6px;margin-top:8px;}
+        .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:var(--txt2);font-size:14px;font-weight:500;transition:all .2s;margin-bottom:2px;}
+        .nav-item:hover{background:var(--hover);color:var(--txt);}
+        .nav-item.active{background:var(--purpleG);color:var(--purpleL);border:1px solid rgba(124,58,237,.3);}
+        .sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);}
+        .main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;}
+        .topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+        .topbar-title{font-size:20px;font-weight:700;}
+        .content{padding:32px;max-width:900px;}
+        .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:none;transition:all .2s;}
+        .btn-primary{background:var(--purple);color:white;}
+        .btn-primary:hover{background:#6d28d9;}
+        .btn-ghost{background:transparent;color:var(--txt2);border:1px solid var(--border);}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+        .card-title{font-size:15px;font-weight:600;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+        .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+        .form-group{display:flex;flex-direction:column;gap:6px;}
+        .form-group.full{grid-column:1/-1;}
+        label{font-size:12px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.05em;}
+        input,select,textarea{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--txt);font-size:14px;outline:none;transition:all .2s;width:100%;}
+        input:focus,select:focus,textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px var(--purpleG);}
+        select option{background:var(--bg2);}
+        textarea{resize:vertical;min-height:80px;}
+        .narrativa-preview{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;font-size:13px;color:var(--txt2);font-style:italic;margin-top:8px;min-height:50px;}
+        ::-webkit-scrollbar{width:6px;}
+        ::-webkit-scrollbar-track{background:var(--bg);}
+        ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+    </style>
+</head>
+<body>
+<aside class="sidebar">
+    <div class="logo">
+        <div class="logo-icon">⚡</div>
+        <div><div class="logo-txt">SIGPROD</div><div class="logo-sub">Gestión de Proyectos</div></div>
+    </div>
+    <nav class="nav">
+        <div class="nav-label">General</div>
+        <a href="/dashboard" class="nav-item"><span>🏠</span>Dashboard</a>
+        <div class="nav-label">Gestión</div>
+        <a href="/proyectos" class="nav-item"><span>📁</span>Proyectos</a>
+        <a href="/sprints" class="nav-item"><span>🏃</span>Sprints</a>
+        <a href="/historias" class="nav-item active"><span>📋</span>Historias</a>
+		<div class="nav-label">Análisis</div>
+		<a href="/requisitos" class="nav-item"><span>📄</span>Requisitos</a>
+		<a href="/casosuso" class="nav-item"><span>🔄</span>Casos de Uso</a>
+		<div class="nav-label">Arquitectura</div>
+		        <a href="/adrs" class="nav-item active"><span>🏗️</span>ADR</a>
+		        <a href="/stack" class="nav-item"><span>⚙️</span>Stack Tecnológico</a>
+		        <a href="/stack/dashboard" class="nav-item"><span>📊</span>Dashboard Arq.</a>
+		        
+		<div class="nav-label">Desarrollo</div>
+        <a href="/tareas" class="nav-item"><span>✅</span>Tareas</a>
+        <a href="/tareas/kanban" class="nav-item"><span>🗂️</span>Kanban</a>
+        <div class="nav-label">Calidad</div>
+        <a href="/defectos" class="nav-item"><span>🐛</span>Defectos</a>
+    </nav>
+    <div class="sidebar-footer"><div>SIGPROD v1.0.0</div><div style="margin-top:4px;color:var(--green);font-size:11px;">● Sistema activo</div></div>
+</aside>
+<main class="main">
+    <div class="topbar">
+        <div class="topbar-title" th:text="${titulo}">Historia</div>
+        <a href="/historias" class="btn btn-ghost">← Volver</a>
+    </div>
+    <div class="content">
+        <input type="hidden" id="historiaId" th:value="${historia.id}"/>
+        <div class="card">
+            <div class="card-title">📋 Información de la Historia</div>
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label>Título *</label>
+                    <input type="text" id="titulo" th:value="${historia.titulo}" placeholder="Título de la historia"/>
+                </div>
+                <div class="form-group">
+                    <label>Como (rol)</label>
+                    <input type="text" id="comoRol" th:value="${historia.comoRol}" placeholder="Ej: usuario registrado"/>
+                </div>
+                <div class="form-group">
+                    <label>Quiero (acción)</label>
+                    <input type="text" id="quieroAccion" th:value="${historia.quieroAccion}" placeholder="Ej: iniciar sesión"/>
+                </div>
+                <div class="form-group full">
+                    <label>Para (beneficio)</label>
+                    <input type="text" id="paraBeneficio" th:value="${historia.paraBeneficio}" placeholder="Ej: acceder a mi cuenta"/>
+                    <div class="narrativa-preview" id="narrativaPreview">Vista previa de la narrativa...</div>
+                </div>
+                <div class="form-group">
+                    <label>Prioridad MoSCoW</label>
+                    <select id="prioridadMoscow">
+                        <option value="">Seleccionar...</option>
+                        <option value="MUST" th:selected="${historia.prioridadMoscow == 'MUST'}">MUST - Obligatorio</option>
+                        <option value="SHOULD" th:selected="${historia.prioridadMoscow == 'SHOULD'}">SHOULD - Debería</option>
+                        <option value="COULD" th:selected="${historia.prioridadMoscow == 'COULD'}">COULD - Podría</option>
+                        <option value="WONT" th:selected="${historia.prioridadMoscow == 'WONT'}">WON'T - No esta vez</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Estimación (puntos)</label>
+                    <input type="number" id="estimacionPuntos" th:value="${historia.estimacionPuntos}" placeholder="1, 2, 3, 5, 8, 13..." min="0"/>
+                </div>
+                <div class="form-group">
+                    <label>Proyecto</label>
+                    <select id="proyectoId">
+                        <option value="">Seleccionar proyecto...</option>
+                        <option th:each="p : ${proyectos}" th:value="${p.id}" th:text="${p.nombre}" th:selected="${historia.proyectoId == p.id}">-</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Sprint</label>
+                    <select id="sprintId">
+                        <option value="">Sin sprint (Backlog)</option>
+                        <option th:each="s : ${sprints}" th:value="${s.id}" th:text="'Sprint ' + ${s.numero}" th:selected="${historia.sprintId == s.id}">-</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select id="estado">
+                        <option value="BACKLOG" th:selected="${historia.estado == 'BACKLOG'}">Backlog</option>
+                        <option value="EN_SPRINT" th:selected="${historia.estado == 'EN_SPRINT'}">En Sprint</option>
+                        <option value="EN_PROGRESO" th:selected="${historia.estado == 'EN_PROGRESO'}">En Progreso</option>
+                        <option value="ACEPTADA" th:selected="${historia.estado == 'ACEPTADA'}">Aceptada</option>
+                        <option value="RECHAZADA" th:selected="${historia.estado == 'RECHAZADA'}">Rechazada</option>
+                    </select>
+                </div>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:24px;">
+                <button onclick="guardar()" class="btn btn-primary">💾 Guardar Historia</button>
+                <a href="/historias" class="btn btn-ghost">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+function actualizarNarrativa() {
+    const rol = document.getElementById('comoRol').value;
+    const accion = document.getElementById('quieroAccion').value;
+    const beneficio = document.getElementById('paraBeneficio').value;
+    const preview = document.getElementById('narrativaPreview');
+    if (rol || accion || beneficio) {
+        preview.textContent = '"Como ' + (rol||'...') + ', quiero ' + (accion||'...') + ', para ' + (beneficio||'...') + '"';
+    }
+}
+document.getElementById('comoRol').addEventListener('input', actualizarNarrativa);
+document.getElementById('quieroAccion').addEventListener('input', actualizarNarrativa);
+document.getElementById('paraBeneficio').addEventListener('input', actualizarNarrativa);
+actualizarNarrativa();
+function guardar() {
+    const id = document.getElementById('historiaId').value;
+    const sprintVal = document.getElementById('sprintId').value;
+    const data = {
+        titulo: document.getElementById('titulo').value,
+        comoRol: document.getElementById('comoRol').value,
+        quieroAccion: document.getElementById('quieroAccion').value,
+        paraBeneficio: document.getElementById('paraBeneficio').value,
+        prioridadMoscow: document.getElementById('prioridadMoscow').value,
+        estimacionPuntos: parseInt(document.getElementById('estimacionPuntos').value) || null,
+        proyectoId: document.getElementById('proyectoId').value,
+        sprintId: sprintVal || null,
+        estado: document.getElementById('estado').value
+    };
+    const url = id ? '/api/historias/' + id : '/api/historias';
+    const method = id ? 'PUT' : 'POST';
+    fetch(url, {method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)})
+        .then(r => r.json())
+        .then(() => window.location.href = '/historias')
+        .catch(e => alert('Error: ' + e));
+}
+</script>
+</body>
+</html>

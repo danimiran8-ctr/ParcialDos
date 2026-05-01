@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Dashboard Arquitectura | SIGPROD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        :root{--bg:#0e0e1a;--bg2:#13131f;--card:#1a1a2e;--hover:#1f1f35;--border:#2a2a45;--txt:#e2e8f0;--txt2:#94a3b8;--muted:#64748b;--purple:#7c3aed;--purpleL:#a855f7;--purpleG:rgba(124,58,237,0.15);--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--blue:#3b82f6;--cyan:#06b6d4;--sidebar:250px;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);display:flex;min-height:100vh;}
+        .sidebar{width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;height:100vh;overflow-y:auto;}
+        .logo{padding:24px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+        .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--purple),var(--purpleL));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+        .logo-txt{font-size:18px;font-weight:700;background:linear-gradient(135deg,#a855f7,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .logo-sub{font-size:10px;color:var(--muted);}
+        .nav{padding:16px 12px;flex:1;}
+        .nav-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;padding:8px 8px 6px;margin-top:8px;}
+        .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:var(--txt2);font-size:14px;font-weight:500;transition:all .2s;margin-bottom:2px;}
+        .nav-item:hover{background:var(--hover);color:var(--txt);}
+        .nav-item.active{background:var(--purpleG);color:var(--purpleL);border:1px solid rgba(124,58,237,.3);}
+        .sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);}
+        .main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;}
+        .topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+        .topbar-title{font-size:20px;font-weight:700;}
+        .content{padding:32px;}
+        .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:none;transition:all .2s;}
+        .btn-primary{background:var(--purple);color:white;}
+        .btn-primary:hover{background:#6d28d9;}
+        .btn-ghost{background:transparent;color:var(--txt2);border:1px solid var(--border);}
+        .btn-ghost:hover{background:var(--hover);}
+        .btn-sm{padding:6px 12px;font-size:12px;}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:28px;}
+        .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;position:relative;overflow:hidden;transition:all .2s;}
+        .stat-card:hover{border-color:var(--purple);transform:translateY(-2px);}
+        .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+        .stat-card.purple::before{background:linear-gradient(90deg,var(--purple),var(--purpleL));}
+        .stat-card.green::before{background:linear-gradient(90deg,var(--green),#34d399);}
+        .stat-card.blue::before{background:linear-gradient(90deg,var(--blue),#60a5fa);}
+        .stat-card.yellow::before{background:linear-gradient(90deg,var(--yellow),#fbbf24);}
+        .stat-card.cyan::before{background:linear-gradient(90deg,var(--cyan),#22d3ee);}
+        .stat-label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
+        .stat-value{font-size:32px;font-weight:700;line-height:1;}
+        .stat-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+        .stat-icon{position:absolute;top:16px;right:16px;font-size:28px;opacity:.12;}
+        .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;}
+        .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+        .card-title{font-size:15px;font-weight:600;}
+        .card-link{font-size:12px;color:var(--purpleL);text-decoration:none;}
+        .adr-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+        .adr-item:last-child{border-bottom:none;}
+        .adr-num{font-size:11px;font-weight:600;color:var(--purple);background:var(--purpleG);padding:2px 8px;border-radius:4px;flex-shrink:0;margin-top:2px;}
+        .adr-titulo{font-size:13px;font-weight:600;margin-bottom:4px;}
+        .adr-contexto{font-size:11px;color:var(--muted);line-height:1.4;}
+        .badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;}
+        .b-green{background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3);}
+        .b-yellow{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3);}
+        .b-red{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);}
+        .b-blue{background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.3);}
+        .b-purple{background:rgba(124,58,237,.15);color:#a855f7;border:1px solid rgba(124,58,237,.3);}
+        .b-gray{background:rgba(100,116,139,.15);color:#94a3b8;border:1px solid rgba(100,116,139,.3);}
+        .b-cyan{background:rgba(6,182,212,.15);color:#06b6d4;border:1px solid rgba(6,182,212,.3);}
+        .capa-bar{margin-bottom:12px;}
+        .capa-label-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;font-size:12px;}
+        .progress-bar{height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+        .progress-fill{height:100%;border-radius:4px;}
+        .stack-mini{display:flex;flex-wrap:wrap;gap:8px;}
+        .stack-tag{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;text-decoration:none;color:var(--txt2);}
+        .stack-tag:hover{border-color:var(--purple);color:var(--purpleL);}
+        .stack-tag-dot{width:8px;height:8px;border-radius:50%;}
+        ::-webkit-scrollbar{width:6px;}
+        ::-webkit-scrollbar-track{background:var(--bg);}
+        ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+    </style>
+</head>
+<body>
+<aside class="sidebar">
+    <div class="logo">
+        <div class="logo-icon">⚡</div>
+        <div><div class="logo-txt">SIGPROD</div><div class="logo-sub">Gestión de Proyectos</div></div>
+    </div>
+    <nav class="nav">
+        <div class="nav-label">General</div>
+        <a href="/dashboard" class="nav-item"><span>🏠</span>Dashboard</a>
+        <div class="nav-label">Gestión</div>
+        <a href="/proyectos" class="nav-item"><span>📁</span>Proyectos</a>
+        <a href="/sprints" class="nav-item"><span>🏃</span>Sprints</a>
+        <a href="/historias" class="nav-item"><span>📋</span>Historias</a>
+        <div class="nav-label">Análisis</div>
+        <a href="/requisitos" class="nav-item"><span>📄</span>Requisitos</a>
+        <a href="/casosuso" class="nav-item"><span>🔄</span>Casos de Uso</a>
+        <div class="nav-label">Arquitectura</div>
+        <a href="/adrs" class="nav-item"><span>🏗️</span>ADR</a>
+        <a href="/stack" class="nav-item"><span>⚙️</span>Stack Tecnológico</a>
+        <a href="/stack/dashboard" class="nav-item active"><span>📊</span>Dashboard Arq.</a>
+        <div class="nav-label">Desarrollo</div>
+        <a href="/tareas" class="nav-item"><span>✅</span>Tareas</a>
+        <a href="/tareas/kanban" class="nav-item"><span>🗂️</span>Kanban</a>
+        <div class="nav-label">Calidad</div>
+        <a href="/defectos" class="nav-item"><span>🐛</span>Defectos</a>
+    </nav>
+    <div class="sidebar-footer">
+        <div>SIGPROD v1.0.0</div>
+        <div style="margin-top:4px;color:var(--green);font-size:11px;">● Sistema activo</div>
+    </div>
+</aside>
+<main class="main">
+    <div class="topbar">
+        <div class="topbar-title">📊 Dashboard de Arquitectura</div>
+        <div style="display:flex;gap:10px;">
+            <a href="/adrs/nuevo" class="btn btn-ghost">+ ADR</a>
+            <a href="/stack/nuevo" class="btn btn-primary">+ Tecnología</a>
+        </div>
+    </div>
+    <div class="content">
+        <div class="stats-grid">
+            <div class="stat-card purple">
+                <div class="stat-icon">🏗️</div>
+                <div class="stat-label">Total ADRs</div>
+                <div class="stat-value" th:text="${adrs.size()}">0</div>
+                <div class="stat-sub">Decisiones registradas</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-icon">✅</div>
+                <div class="stat-label">ADRs Aceptadas</div>
+                <div class="stat-value" th:text="${#lists.size(adrs.?[estado == 'ACEPTADA'])}">0</div>
+                <div class="stat-sub">Decisiones vigentes</div>
+            </div>
+            <div class="stat-card blue">
+                <div class="stat-icon">⚙️</div>
+                <div class="stat-label">Tecnologías</div>
+                <div class="stat-value" th:text="${stacks.size()}">0</div>
+                <div class="stat-sub">En el stack</div>
+            </div>
+            <div class="stat-card cyan">
+                <div class="stat-icon">🚀</div>
+                <div class="stat-label">Activas</div>
+                <div class="stat-value" th:text="${#lists.size(stacks.?[estado == 'ACTIVO'])}">0</div>
+                <div class="stat-sub">Tecnologías activas</div>
+            </div>
+            <div class="stat-card yellow">
+                <div class="stat-icon">📁</div>
+                <div class="stat-label">Proyectos</div>
+                <div class="stat-value" th:text="${proyectos.size()}">0</div>
+                <div class="stat-sub">Con arquitectura</div>
+            </div>
+        </div>
+
+        <div class="grid2">
+            <!-- ADRs RECIENTES -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">🏗️ Últimas Decisiones (ADR)</span>
+                    <a href="/adrs" class="card-link">Ver todas →</a>
+                </div>
+                <div th:each="a : ${adrs}" th:if="${aStat.index < 5}">
+                    <div class="adr-item">
+                        <span class="adr-num" th:text="'ADR-' + ${a.numero}">-</span>
+                        <div style="flex:1;">
+                            <div class="adr-titulo" th:text="${a.titulo}">-</div>
+                            <div class="adr-contexto" th:text="${a.contexto != null ? #strings.abbreviate(a.contexto, 80) : ''}">-</div>
+                            <div style="margin-top:6px;">
+                                <span th:switch="${a.estado}">
+                                    <span th:case="'PROPUESTA'" class="badge b-yellow">💡 Propuesta</span>
+                                    <span th:case="'ACEPTADA'" class="badge b-green">✓ Aceptada</span>
+                                    <span th:case="'OBSOLETA'" class="badge b-red">⚠️ Obsoleta</span>
+                                    <span th:case="'RECHAZADA'" class="badge b-gray">❌ Rechazada</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${#lists.isEmpty(adrs)}" style="text-align:center;padding:30px;color:var(--muted);">
+                    <div style="font-size:32px;opacity:.4;margin-bottom:8px;">🏗️</div>
+                    <div>No hay ADRs registrados</div>
+                    <a href="/adrs/nuevo" style="color:var(--purpleL);font-size:12px;margin-top:8px;display:block;">+ Registrar primera decisión</a>
+                </div>
+            </div>
+
+            <!-- DISTRIBUCIÓN DEL STACK -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">⚙️ Distribución del Stack</span>
+                    <a href="/stack" class="card-link">Ver todo →</a>
+                </div>
+                <div class="capa-bar">
+                    <div class="capa-label-row">
+                        <span style="color:var(--blue);">🖥️ Frontend</span>
+                        <span th:text="${#lists.size(stacks.?[capa == 'FRONTEND'])}">0</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="background:var(--blue);"
+                             th:style="'width:' + (${stacks.size()} > 0 ? (${#lists.size(stacks.?[capa == 'FRONTEND'])} * 100 / ${stacks.size()}) : 0) + '%;background:var(--blue);'"></div>
+                    </div>
+                </div>
+                <div class="capa-bar">
+                    <div class="capa-label-row">
+                        <span style="color:var(--purple);">⚡ Backend</span>
+                        <span th:text="${#lists.size(stacks.?[capa == 'BACKEND'])}">0</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="background:var(--purple);"
+                             th:style="'width:' + (${stacks.size()} > 0 ? (${#lists.size(stacks.?[capa == 'BACKEND'])} * 100 / ${stacks.size()}) : 0) + '%;background:var(--purple);'"></div>
+                    </div>
+                </div>
+                <div class="capa-bar">
+                    <div class="capa-label-row">
+                        <span style="color:var(--green);">🗄️ Base de Datos</span>
+                        <span th:text="${#lists.size(stacks.?[capa == 'BASE_DATOS'])}">0</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="background:var(--green);"
+                             th:style="'width:' + (${stacks.size()} > 0 ? (${#lists.size(stacks.?[capa == 'BASE_DATOS'])} * 100 / ${stacks.size()}) : 0) + '%;background:var(--green);'"></div>
+                    </div>
+                </div>
+                <div class="capa-bar">
+                    <div class="capa-label-row">
+                        <span style="color:var(--yellow);">🏠 Infraestructura</span>
+                        <span th:text="${#lists.size(stacks.?[capa == 'INFRAESTRUCTURA'])}">0</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="background:var(--yellow);"
+                             th:style="'width:' + (${stacks.size()} > 0 ? (${#lists.size(stacks.?[capa == 'INFRAESTRUCTURA'])} * 100 / ${stacks.size()}) : 0) + '%;background:var(--yellow);'"></div>
+                    </div>
+                </div>
+                <div class="capa-bar">
+                    <div class="capa-label-row">
+                        <span style="color:var(--cyan);">🚀 DevOps</span>
+                        <span th:text="${#lists.size(stacks.?[capa == 'DEVOPS'])}">0</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="background:var(--cyan);"
+                             th:style="'width:' + (${stacks.size()} > 0 ? (${#lists.size(stacks.?[capa == 'DEVOPS'])} * 100 / ${stacks.size()}) : 0) + '%;background:var(--cyan);'"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TODAS LAS TECNOLOGÍAS -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">🔧 Tecnologías del Stack</span>
+                <a href="/stack/nuevo" class="btn btn-sm btn-primary">+ Agregar</a>
+            </div>
+            <div class="stack-mini">
+                <a th:each="s : ${stacks}" th:href="@{/stack/{id}/editar(id=${s.id})}" class="stack-tag">
+                    <span class="stack-tag-dot"
+                          th:style="${s.capa == 'FRONTEND'} ? 'background:#3b82f6' :
+                                    (${s.capa == 'BACKEND'} ? 'background:#7c3aed' :
+                                    (${s.capa == 'BASE_DATOS'} ? 'background:#10b981' :
+                                    (${s.capa == 'DEVOPS'} ? 'background:#06b6d4' : 'background:#f59e0b')))">
+                    </span>
+                    <span th:text="${s.nombre}">-</span>
+                    <span style="font-size:10px;color:var(--muted);" th:text="${s.version != null ? 'v' + s.version : ''}"></span>
+                </a>
+                <a th:if="${#lists.isEmpty(stacks)}" href="/stack/nuevo" class="stack-tag" style="border-style:dashed;color:var(--purple);">
+                    + Agregar tecnología
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

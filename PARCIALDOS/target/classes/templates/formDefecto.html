@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Reportar Defecto | SIGPROD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        :root{--bg:#0e0e1a;--bg2:#13131f;--card:#1a1a2e;--hover:#1f1f35;--border:#2a2a45;--txt:#e2e8f0;--txt2:#94a3b8;--muted:#64748b;--purple:#7c3aed;--purpleL:#a855f7;--purpleG:rgba(124,58,237,0.15);--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--sidebar:250px;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);display:flex;min-height:100vh;}
+        .sidebar{width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;height:100vh;overflow-y:auto;}
+        .logo{padding:24px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+        .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--purple),var(--purpleL));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+        .logo-txt{font-size:18px;font-weight:700;background:linear-gradient(135deg,#a855f7,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .logo-sub{font-size:10px;color:var(--muted);}
+        .nav{padding:16px 12px;flex:1;}
+        .nav-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;padding:8px 8px 6px;margin-top:8px;}
+        .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:var(--txt2);font-size:14px;font-weight:500;transition:all .2s;margin-bottom:2px;}
+        .nav-item:hover{background:var(--hover);color:var(--txt);}
+        .nav-item.active{background:var(--purpleG);color:var(--purpleL);border:1px solid rgba(124,58,237,.3);}
+        .sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);}
+        .main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;}
+        .topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+        .topbar-title{font-size:20px;font-weight:700;}
+        .content{padding:32px;max-width:900px;}
+        .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:none;transition:all .2s;}
+        .btn-primary{background:var(--purple);color:white;}
+        .btn-primary:hover{background:#6d28d9;}
+        .btn-ghost{background:transparent;color:var(--txt2);border:1px solid var(--border);}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+        .card-title{font-size:15px;font-weight:600;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+        .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+        .form-group{display:flex;flex-direction:column;gap:6px;}
+        .form-group.full{grid-column:1/-1;}
+        label{font-size:12px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.05em;}
+        input,select,textarea{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--txt);font-size:14px;outline:none;transition:all .2s;width:100%;}
+        input:focus,select:focus,textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px var(--purpleG);}
+        select option{background:var(--bg2);}
+        textarea{resize:vertical;min-height:90px;}
+        ::-webkit-scrollbar{width:6px;}
+        ::-webkit-scrollbar-track{background:var(--bg);}
+        ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+    </style>
+</head>
+<body>
+<aside class="sidebar">
+    <div class="logo">
+        <div class="logo-icon">⚡</div>
+        <div><div class="logo-txt">SIGPROD</div><div class="logo-sub">Gestión de Proyectos</div></div>
+    </div>
+    <nav class="nav">
+        <div class="nav-label">General</div>
+        <a href="/dashboard" class="nav-item"><span>🏠</span>Dashboard</a>
+        <div class="nav-label">Gestión</div>
+        <a href="/proyectos" class="nav-item"><span>📁</span>Proyectos</a>
+        <a href="/sprints" class="nav-item"><span>🏃</span>Sprints</a>
+        <a href="/historias" class="nav-item"><span>📋</span>Historias</a>
+		<div class="nav-label">Análisis</div>
+		<a href="/requisitos" class="nav-item"><span>📄</span>Requisitos</a>
+		<a href="/casosuso" class="nav-item"><span>🔄</span>Casos de Uso</a>
+		<div class="nav-label">Arquitectura</div>
+		        <a href="/adrs" class="nav-item active"><span>🏗️</span>ADR</a>
+		        <a href="/stack" class="nav-item"><span>⚙️</span>Stack Tecnológico</a>
+		        <a href="/stack/dashboard" class="nav-item"><span>📊</span>Dashboard Arq.</a>
+		        
+		<div class="nav-label">Desarrollo</div>
+        <a href="/tareas" class="nav-item"><span>✅</span>Tareas</a>
+        <a href="/tareas/kanban" class="nav-item"><span>🗂️</span>Kanban</a>
+        <div class="nav-label">Calidad</div>
+        <a href="/defectos" class="nav-item active"><span>🐛</span>Defectos</a>
+    </nav>
+    <div class="sidebar-footer"><div>SIGPROD v1.0.0</div><div style="margin-top:4px;color:var(--green);font-size:11px;">● Sistema activo</div></div>
+</aside>
+<main class="main">
+    <div class="topbar">
+        <div class="topbar-title" th:text="${titulo}">Defecto</div>
+        <a href="/defectos" class="btn btn-ghost">← Volver</a>
+    </div>
+    <div class="content">
+        <div class="card">
+            <div class="card-title">🐛 Información del Defecto</div>
+            <input type="hidden" id="defectoId" th:value="${defecto.id}"/>
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label>Título *</label>
+                    <input type="text" id="titulo" th:value="${defecto.titulo}" placeholder="Descripción breve del defecto"/>
+                </div>
+                <div class="form-group full">
+                    <label>Descripción</label>
+                    <textarea id="descripcion" placeholder="Descripción detallada..." th:text="${defecto.descripcion}"></textarea>
+                </div>
+                <div class="form-group full">
+                    <label>Pasos para reproducir</label>
+                    <textarea id="pasosReproduccion" placeholder="1. Ir a...&#10;2. Hacer clic en...&#10;3. Observar que..." th:text="${defecto.pasosReproduccion}"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Resultado esperado</label>
+                    <textarea id="resultadoEsperado" th:text="${defecto.resultadoEsperado}" style="min-height:70px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Resultado obtenido</label>
+                    <textarea id="resultadoObtenido" th:text="${defecto.resultadoObtenido}" style="min-height:70px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Severidad</label>
+                    <select id="severidad">
+                        <option value="">Seleccionar...</option>
+                        <option value="CRITICO" th:selected="${defecto.severidad == 'CRITICO'}">🔴 Crítico</option>
+                        <option value="MAYOR" th:selected="${defecto.severidad == 'MAYOR'}">🟡 Mayor</option>
+                        <option value="MENOR" th:selected="${defecto.severidad == 'MENOR'}">🔵 Menor</option>
+                        <option value="TRIVIAL" th:selected="${defecto.severidad == 'TRIVIAL'}">⚪ Trivial</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Prioridad</label>
+                    <select id="prioridad">
+                        <option value="BAJA" th:selected="${defecto.prioridad == 'BAJA'}">Baja</option>
+                        <option value="MEDIA" th:selected="${defecto.prioridad == 'MEDIA'}">Media</option>
+                        <option value="ALTA" th:selected="${defecto.prioridad == 'ALTA'}">Alta</option>
+                        <option value="URGENTE" th:selected="${defecto.prioridad == 'URGENTE'}">Urgente</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select id="estado">
+                        <option value="NUEVO" th:selected="${defecto.estado == 'NUEVO'}">Nuevo</option>
+                        <option value="ASIGNADO" th:selected="${defecto.estado == 'ASIGNADO'}">Asignado</option>
+                        <option value="EN_DESARROLLO" th:selected="${defecto.estado == 'EN_DESARROLLO'}">En Desarrollo</option>
+                        <option value="RESUELTO" th:selected="${defecto.estado == 'RESUELTO'}">Resuelto</option>
+                        <option value="CERRADO" th:selected="${defecto.estado == 'CERRADO'}">Cerrado</option>
+                        <option value="REABIERTO" th:selected="${defecto.estado == 'REABIERTO'}">Reabierto</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ambiente</label>
+                    <select id="ambiente">
+                        <option value="">Seleccionar...</option>
+                        <option value="DEV" th:selected="${defecto.ambiente == 'DEV'}">Desarrollo</option>
+                        <option value="STAGING" th:selected="${defecto.ambiente == 'STAGING'}">Staging</option>
+                        <option value="PRODUCCION" th:selected="${defecto.ambiente == 'PRODUCCION'}">Producción</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Reportado por</label>
+                    <input type="text" id="reportadoPorNombre" th:value="${defecto.reportadoPorNombre}" placeholder="Nombre del tester"/>
+                </div>
+                <div class="form-group">
+                    <label>Asignado a</label>
+                    <input type="text" id="asignadoANombre" th:value="${defecto.asignadoANombre}" placeholder="Nombre del desarrollador"/>
+                </div>
+                <div class="form-group">
+                    <label>Proyecto</label>
+                    <select id="proyectoId">
+                        <option value="">Seleccionar...</option>
+                        <option th:each="p : ${proyectos}" th:value="${p.id}" th:text="${p.nombre}" th:selected="${defecto.proyectoId == p.id}">-</option>
+                    </select>
+                </div>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:24px;">
+                <button onclick="guardar()" class="btn btn-primary">💾 Guardar Defecto</button>
+                <a href="/defectos" class="btn btn-ghost">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+function guardar() {
+    const id = document.getElementById('defectoId').value;
+    const data = {
+        titulo: document.getElementById('titulo').value,
+        descripcion: document.getElementById('descripcion').value,
+        pasosReproduccion: document.getElementById('pasosReproduccion').value,
+        resultadoEsperado: document.getElementById('resultadoEsperado').value,
+        resultadoObtenido: document.getElementById('resultadoObtenido').value,
+        severidad: document.getElementById('severidad').value,
+        prioridad: document.getElementById('prioridad').value,
+        estado: document.getElementById('estado').value,
+        ambiente: document.getElementById('ambiente').value,
+        reportadoPorNombre: document.getElementById('reportadoPorNombre').value,
+        asignadoANombre: document.getElementById('asignadoANombre').value,
+        proyectoId: document.getElementById('proyectoId').value
+    };
+    const url = id ? '/api/defectos/' + id : '/api/defectos';
+    const method = id ? 'PUT' : 'POST';
+    fetch(url, {method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)})
+        .then(r => r.json())
+        .then(() => window.location.href = '/defectos')
+        .catch(e => alert('Error: ' + e));
+}
+</script>
+</body>
+</html>
