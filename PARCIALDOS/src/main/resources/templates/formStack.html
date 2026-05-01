@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Formulario Stack | SIGPROD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        :root{--bg:#0e0e1a;--bg2:#13131f;--card:#1a1a2e;--hover:#1f1f35;--border:#2a2a45;--txt:#e2e8f0;--txt2:#94a3b8;--muted:#64748b;--purple:#7c3aed;--purpleL:#a855f7;--purpleG:rgba(124,58,237,0.15);--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--blue:#3b82f6;--sidebar:250px;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);display:flex;min-height:100vh;}
+        .sidebar{width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;height:100vh;overflow-y:auto;}
+        .logo{padding:24px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+        .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--purple),var(--purpleL));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+        .logo-txt{font-size:18px;font-weight:700;background:linear-gradient(135deg,#a855f7,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .logo-sub{font-size:10px;color:var(--muted);}
+        .nav{padding:16px 12px;flex:1;}
+        .nav-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;padding:8px 8px 6px;margin-top:8px;}
+        .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:var(--txt2);font-size:14px;font-weight:500;transition:all .2s;margin-bottom:2px;}
+        .nav-item:hover{background:var(--hover);color:var(--txt);}
+        .nav-item.active{background:var(--purpleG);color:var(--purpleL);border:1px solid rgba(124,58,237,.3);}
+        .sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);}
+        .main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;}
+        .topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+        .topbar-title{font-size:20px;font-weight:700;}
+        .content{padding:32px;max-width:900px;}
+        .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:none;transition:all .2s;}
+        .btn-primary{background:var(--purple);color:white;}
+        .btn-primary:hover{background:#6d28d9;}
+        .btn-ghost{background:transparent;color:var(--txt2);border:1px solid var(--border);}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+        .card-title{font-size:15px;font-weight:600;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+        .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+        .form-group{display:flex;flex-direction:column;gap:6px;}
+        .form-group.full{grid-column:1/-1;}
+        label{font-size:12px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.05em;}
+        input,select,textarea{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--txt);font-size:14px;outline:none;transition:all .2s;width:100%;}
+        input:focus,select:focus,textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px var(--purpleG);}
+        select option{background:var(--bg2);}
+        textarea{resize:vertical;min-height:90px;}
+        .capa-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px;}
+        .capa-btn{padding:12px 8px;border:2px solid var(--border);border-radius:8px;cursor:pointer;text-align:center;transition:all .2s;background:transparent;}
+        .capa-btn:hover{border-color:var(--purple);}
+        .capa-btn.selected{border-color:var(--purple);background:var(--purpleG);color:var(--purpleL);}
+        .capa-icon{font-size:20px;margin-bottom:4px;}
+        .capa-label{font-size:12px;font-weight:600;}
+        ::-webkit-scrollbar{width:6px;}
+        ::-webkit-scrollbar-track{background:var(--bg);}
+        ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+    </style>
+</head>
+<body>
+<aside class="sidebar">
+    <div class="logo">
+        <div class="logo-icon">⚡</div>
+        <div><div class="logo-txt">SIGPROD</div><div class="logo-sub">Gestión de Proyectos</div></div>
+    </div>
+    <nav class="nav">
+        <div class="nav-label">General</div>
+        <a href="/dashboard" class="nav-item"><span>🏠</span>Dashboard</a>
+        <div class="nav-label">Gestión</div>
+        <a href="/proyectos" class="nav-item"><span>📁</span>Proyectos</a>
+        <a href="/sprints" class="nav-item"><span>🏃</span>Sprints</a>
+        <a href="/historias" class="nav-item"><span>📋</span>Historias</a>
+        <div class="nav-label">Análisis</div>
+        <a href="/requisitos" class="nav-item"><span>📄</span>Requisitos</a>
+        <a href="/casosuso" class="nav-item"><span>🔄</span>Casos de Uso</a>
+        <div class="nav-label">Arquitectura</div>
+        <a href="/adrs" class="nav-item"><span>🏗️</span>ADR</a>
+        <a href="/stack" class="nav-item active"><span>⚙️</span>Stack Tecnológico</a>
+        <a href="/stack/dashboard" class="nav-item"><span>📊</span>Dashboard Arq.</a>
+        <div class="nav-label">Desarrollo</div>
+        <a href="/tareas" class="nav-item"><span>✅</span>Tareas</a>
+        <a href="/tareas/kanban" class="nav-item"><span>🗂️</span>Kanban</a>
+        <div class="nav-label">Calidad</div>
+        <a href="/defectos" class="nav-item"><span>🐛</span>Defectos</a>
+    </nav>
+    <div class="sidebar-footer">
+        <div>SIGPROD v1.0.0</div>
+        <div style="margin-top:4px;color:var(--green);font-size:11px;">● Sistema activo</div>
+    </div>
+</aside>
+<main class="main">
+    <div class="topbar">
+        <div class="topbar-title" th:text="${titulo}">Stack</div>
+        <a href="/stack" class="btn btn-ghost">← Volver</a>
+    </div>
+    <div class="content">
+        <input type="hidden" id="stackId" th:value="${stack.id}"/>
+        <div class="card">
+            <div class="card-title">⚙️ Capa del Stack</div>
+            <div class="capa-grid">
+                <div class="capa-btn" id="capaFRONTEND" onclick="seleccionarCapa('FRONTEND')">
+                    <div class="capa-icon">🖥️</div>
+                    <div class="capa-label">Frontend</div>
+                </div>
+                <div class="capa-btn" id="capaBACKEND" onclick="seleccionarCapa('BACKEND')">
+                    <div class="capa-icon">⚡</div>
+                    <div class="capa-label">Backend</div>
+                </div>
+                <div class="capa-btn" id="capaBASE_DATOS" onclick="seleccionarCapa('BASE_DATOS')">
+                    <div class="capa-icon">🗄️</div>
+                    <div class="capa-label">Base de Datos</div>
+                </div>
+                <div class="capa-btn" id="capaINFRAESTRUCTURA" onclick="seleccionarCapa('INFRAESTRUCTURA')">
+                    <div class="capa-icon">🏠</div>
+                    <div class="capa-label">Infraestructura</div>
+                </div>
+                <div class="capa-btn" id="capaSEGURIDAD" onclick="seleccionarCapa('SEGURIDAD')">
+                    <div class="capa-icon">🔒</div>
+                    <div class="capa-label">Seguridad</div>
+                </div>
+                <div class="capa-btn" id="capaDEVOPS" onclick="seleccionarCapa('DEVOPS')">
+                    <div class="capa-icon">🚀</div>
+                    <div class="capa-label">DevOps</div>
+                </div>
+            </div>
+            <input type="hidden" id="capa" th:value="${stack.capa}"/>
+        </div>
+        <div class="card">
+            <div class="card-title">📋 Información de la Tecnología</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nombre *</label>
+                    <input type="text" id="nombre" th:value="${stack.nombre}" placeholder="Ej: React, Spring Boot, MongoDB"/>
+                </div>
+                <div class="form-group">
+                    <label>Versión</label>
+                    <input type="text" id="version" th:value="${stack.version}" placeholder="Ej: 18.2.0, 3.2.5"/>
+                </div>
+                <div class="form-group full">
+                    <label>Descripción</label>
+                    <textarea id="descripcion" placeholder="¿Qué es y para qué se usa esta tecnología?" th:text="${stack.descripcion}"></textarea>
+                </div>
+                <div class="form-group full">
+                    <label>Justificación</label>
+                    <textarea id="justificacion" placeholder="¿Por qué se eligió esta tecnología sobre otras alternativas?" th:text="${stack.justificacion}"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select id="estado">
+                        <option value="ACTIVO" th:selected="${stack.estado == 'ACTIVO'}">● Activo</option>
+                        <option value="EN_EVALUACION" th:selected="${stack.estado == 'EN_EVALUACION'}">🔍 En Evaluación</option>
+                        <option value="DEPRECADO" th:selected="${stack.estado == 'DEPRECADO'}">⚠️ Deprecado</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Proyecto</label>
+                    <select id="proyectoId">
+                        <option value="">Seleccionar proyecto...</option>
+                        <option th:each="p : ${proyectos}" th:value="${p.id}" th:text="${p.nombre}" th:selected="${stack.proyectoId == p.id}">-</option>
+                    </select>
+                </div>
+                <div class="form-group full">
+                    <label>Arquitecto</label>
+                    <input type="text" id="arquitectoNombre" th:value="${stack.arquitectoNombre}" placeholder="Nombre del arquitecto responsable"/>
+                </div>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:24px;">
+                <button onclick="guardar()" class="btn btn-primary">💾 Guardar Tecnología</button>
+                <a href="/stack" class="btn btn-ghost">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+    const capaInicial = document.getElementById('capa').value;
+    if (capaInicial) seleccionarCapa(capaInicial);
+
+    function seleccionarCapa(capa) {
+        document.getElementById('capa').value = capa;
+        document.querySelectorAll('.capa-btn').forEach(b => b.classList.remove('selected'));
+        const btn = document.getElementById('capa' + capa);
+        if (btn) btn.classList.add('selected');
+    }
+
+    function guardar() {
+        const id = document.getElementById('stackId').value;
+        const capa = document.getElementById('capa').value;
+        if (!capa) { alert('Selecciona la capa del stack'); return; }
+        const data = {
+            nombre: document.getElementById('nombre').value,
+            version: document.getElementById('version').value,
+            descripcion: document.getElementById('descripcion').value,
+            justificacion: document.getElementById('justificacion').value,
+            capa: capa,
+            estado: document.getElementById('estado').value,
+            proyectoId: document.getElementById('proyectoId').value,
+            arquitectoNombre: document.getElementById('arquitectoNombre').value
+        };
+        const url = id ? '/api/stack/' + id : '/api/stack';
+        const method = id ? 'PUT' : 'POST';
+        fetch(url, {method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data)})
+            .then(r => r.json())
+            .then(() => window.location.href = '/stack')
+            .catch(e => alert('Error: ' + e));
+    }
+</script>
+</body>
+</html>

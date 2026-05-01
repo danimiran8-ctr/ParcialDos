@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Formulario Sprint | SIGPROD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        :root{--bg:#0e0e1a;--bg2:#13131f;--card:#1a1a2e;--hover:#1f1f35;--border:#2a2a45;--txt:#e2e8f0;--txt2:#94a3b8;--muted:#64748b;--purple:#7c3aed;--purpleL:#a855f7;--purpleG:rgba(124,58,237,0.15);--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--sidebar:250px;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);display:flex;min-height:100vh;}
+        .sidebar{width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;height:100vh;overflow-y:auto;}
+        .logo{padding:24px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+        .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--purple),var(--purpleL));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+        .logo-txt{font-size:18px;font-weight:700;background:linear-gradient(135deg,#a855f7,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .logo-sub{font-size:10px;color:var(--muted);}
+        .nav{padding:16px 12px;flex:1;}
+        .nav-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;padding:8px 8px 6px;margin-top:8px;}
+        .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:var(--txt2);font-size:14px;font-weight:500;transition:all .2s;margin-bottom:2px;}
+        .nav-item:hover{background:var(--hover);color:var(--txt);}
+        .nav-item.active{background:var(--purpleG);color:var(--purpleL);border:1px solid rgba(124,58,237,.3);}
+        .sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);}
+        .main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;}
+        .topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+        .topbar-title{font-size:20px;font-weight:700;}
+        .content{padding:32px;max-width:800px;}
+        .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:none;transition:all .2s;}
+        .btn-primary{background:var(--purple);color:white;}
+        .btn-primary:hover{background:#6d28d9;}
+        .btn-ghost{background:transparent;color:var(--txt2);border:1px solid var(--border);}
+        .btn-ghost:hover{background:var(--hover);}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;}
+        .card-title{font-size:15px;font-weight:600;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+        .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+        .form-group{display:flex;flex-direction:column;gap:6px;}
+        .form-group.full{grid-column:1/-1;}
+        label{font-size:12px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.05em;}
+        input,select,textarea{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--txt);font-size:14px;outline:none;transition:all .2s;width:100%;}
+        input:focus,select:focus,textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px var(--purpleG);}
+        select option{background:var(--bg2);}
+        textarea{resize:vertical;min-height:80px;}
+        ::-webkit-scrollbar{width:6px;}
+        ::-webkit-scrollbar-track{background:var(--bg);}
+        ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+    </style>
+</head>
+<body>
+<aside class="sidebar">
+    <div class="logo">
+        <div class="logo-icon">⚡</div>
+        <div><div class="logo-txt">SIGPROD</div><div class="logo-sub">Gestión de Proyectos</div></div>
+    </div>
+    <nav class="nav">
+        <div class="nav-label">General</div>
+        <a href="/dashboard" class="nav-item"><span>🏠</span>Dashboard</a>
+        <div class="nav-label">Gestión</div>
+        <a href="/proyectos" class="nav-item"><span>📁</span>Proyectos</a>
+        <a href="/sprints" class="nav-item active"><span>🏃</span>Sprints</a>
+        <a href="/historias" class="nav-item"><span>📋</span>Historias</a>
+		<div class="nav-label">Análisis</div>
+		<a href="/requisitos" class="nav-item"><span>📄</span>Requisitos</a>
+		<a href="/casosuso" class="nav-item"><span>🔄</span>Casos de Uso</a>
+		<div class="nav-label">Arquitectura</div>
+		        <a href="/adrs" class="nav-item active"><span>🏗️</span>ADR</a>
+		        <a href="/stack" class="nav-item"><span>⚙️</span>Stack Tecnológico</a>
+		        <a href="/stack/dashboard" class="nav-item"><span>📊</span>Dashboard Arq.</a>
+		        
+		<div class="nav-label">Desarrollo</div>
+        <a href="/tareas" class="nav-item"><span>✅</span>Tareas</a>
+        <a href="/tareas/kanban" class="nav-item"><span>🗂️</span>Kanban</a>
+        <div class="nav-label">Calidad</div>
+        <a href="/defectos" class="nav-item"><span>🐛</span>Defectos</a>
+    </nav>
+    <div class="sidebar-footer"><div>SIGPROD v1.0.0</div><div style="margin-top:4px;color:var(--green);font-size:11px;">● Sistema activo</div></div>
+</aside>
+<main class="main">
+    <div class="topbar">
+        <div class="topbar-title" th:text="${titulo}">Sprint</div>
+        <a href="/sprints" class="btn btn-ghost">← Volver</a>
+    </div>
+    <div class="content">
+        <div class="card">
+            <div class="card-title">🏃 Datos del Sprint</div>
+            <input type="hidden" id="sprintId" th:value="${sprint.id}"/>
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label>Proyecto *</label>
+                    <select id="proyectoId">
+                        <option value="">Seleccionar proyecto...</option>
+                        <option th:each="p : ${proyectos}" th:value="${p.id}" th:text="${p.nombre}" th:selected="${sprint.proyectoId == p.id}">-</option>
+                    </select>
+                </div>
+                <div class="form-group full">
+                    <label>Objetivo del Sprint *</label>
+                    <textarea id="objetivo" placeholder="¿Qué se logrará en este sprint?" th:text="${sprint.objetivo}"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Fecha Inicio</label>
+                    <input type="date" id="fechaInicio" th:value="${sprint.fechaInicio}"/>
+                </div>
+                <div class="form-group">
+                    <label>Fecha Fin</label>
+                    <input type="date" id="fechaFin" th:value="${sprint.fechaFin}"/>
+                </div>
+                <div class="form-group">
+                    <label>Capacidad (horas)</label>
+                    <input type="number" id="capacidadHoras" th:value="${sprint.capacidadHoras}" placeholder="80" min="0"/>
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select id="estado">
+                        <option value="PLANIFICADO" th:selected="${sprint.estado == 'PLANIFICADO'}">Planificado</option>
+                        <option value="ACTIVO" th:selected="${sprint.estado == 'ACTIVO'}">Activo</option>
+                        <option value="COMPLETADO" th:selected="${sprint.estado == 'COMPLETADO'}">Completado</option>
+                        <option value="CANCELADO" th:selected="${sprint.estado == 'CANCELADO'}">Cancelado</option>
+                    </select>
+                </div>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:24px;">
+                <button onclick="guardar()" class="btn btn-primary">💾 Guardar Sprint</button>
+                <a href="/sprints" class="btn btn-ghost">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+function guardar() {
+    const id = document.getElementById('sprintId').value;
+    const data = {
+        proyectoId: document.getElementById('proyectoId').value,
+        objetivo: document.getElementById('objetivo').value,
+        fechaInicio: document.getElementById('fechaInicio').value || null,
+        fechaFin: document.getElementById('fechaFin').value || null,
+        capacidadHoras: parseInt(document.getElementById('capacidadHoras').value) || 0,
+        estado: document.getElementById('estado').value
+    };
+    const url = id ? '/api/sprints/' + id : '/api/sprints';
+    const method = id ? 'PUT' : 'POST';
+    fetch(url, {method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data)})
+        .then(r => r.json())
+        .then(() => window.location.href = '/sprints')
+        .catch(e => alert('Error: ' + e));
+}
+</script>
+</body>
+</html

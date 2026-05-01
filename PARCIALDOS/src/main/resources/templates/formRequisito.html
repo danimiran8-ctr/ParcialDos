@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Formulario Requisito | SIGPROD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        :root{--bg:#0e0e1a;--bg2:#13131f;--card:#1a1a2e;--hover:#1f1f35;--border:#2a2a45;--txt:#e2e8f0;--txt2:#94a3b8;--muted:#64748b;--purple:#7c3aed;--purpleL:#a855f7;--purpleG:rgba(124,58,237,0.15);--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--blue:#3b82f6;--sidebar:250px;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);display:flex;min-height:100vh;}
+        .sidebar{width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;height:100vh;overflow-y:auto;}
+        .logo{padding:24px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+        .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--purple),var(--purpleL));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+        .logo-txt{font-size:18px;font-weight:700;background:linear-gradient(135deg,#a855f7,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .logo-sub{font-size:10px;color:var(--muted);}
+        .nav{padding:16px 12px;flex:1;}
+        .nav-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;padding:8px 8px 6px;margin-top:8px;}
+        .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:var(--txt2);font-size:14px;font-weight:500;transition:all .2s;margin-bottom:2px;}
+        .nav-item:hover{background:var(--hover);color:var(--txt);}
+        .nav-item.active{background:var(--purpleG);color:var(--purpleL);border:1px solid rgba(124,58,237,.3);}
+        .sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);}
+        .main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;}
+        .topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+        .topbar-title{font-size:20px;font-weight:700;}
+        .content{padding:32px;max-width:900px;}
+        .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:none;transition:all .2s;}
+        .btn-primary{background:var(--purple);color:white;}
+        .btn-primary:hover{background:#6d28d9;}
+        .btn-ghost{background:transparent;color:var(--txt2);border:1px solid var(--border);}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:20px;}
+        .card-title{font-size:15px;font-weight:600;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+        .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+        .form-group{display:flex;flex-direction:column;gap:6px;}
+        .form-group.full{grid-column:1/-1;}
+        label{font-size:12px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.05em;}
+        input,select,textarea{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--txt);font-size:14px;outline:none;transition:all .2s;width:100%;}
+        input:focus,select:focus,textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px var(--purpleG);}
+        select option{background:var(--bg2);}
+        textarea{resize:vertical;min-height:90px;}
+        .tipo-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+        .tipo-btn{padding:12px;border:2px solid var(--border);border-radius:8px;cursor:pointer;text-align:center;transition:all .2s;background:transparent;}
+        .tipo-btn:hover{border-color:var(--purple);}
+        .tipo-btn.selected-func{border-color:var(--blue);background:rgba(59,130,246,.1);color:#3b82f6;}
+        .tipo-btn.selected-nofunc{border-color:var(--yellow);background:rgba(245,158,11,.1);color:#f59e0b;}
+        .tipo-icon{font-size:24px;margin-bottom:6px;}
+        .tipo-label{font-size:13px;font-weight:600;}
+        .tipo-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+        ::-webkit-scrollbar{width:6px;}
+        ::-webkit-scrollbar-track{background:var(--bg);}
+        ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+    </style>
+</head>
+<body>
+<aside class="sidebar">
+    <div class="logo">
+        <div class="logo-icon">⚡</div>
+        <div><div class="logo-txt">SIGPROD</div><div class="logo-sub">Gestión de Proyectos</div></div>
+    </div>
+    <nav class="nav">
+        <div class="nav-label">General</div>
+        <a href="/dashboard" class="nav-item"><span>🏠</span>Dashboard</a>
+        <div class="nav-label">Gestión</div>
+        <a href="/proyectos" class="nav-item"><span>📁</span>Proyectos</a>
+        <a href="/sprints" class="nav-item"><span>🏃</span>Sprints</a>
+        <a href="/historias" class="nav-item"><span>📋</span>Historias</a>
+        <div class="nav-label">Análisis</div>
+        <a href="/requisitos" class="nav-item active"><span>📄</span>Requisitos</a>
+        <a href="/casosuso" class="nav-item"><span>🔄</span>Casos de Uso</a>
+		<div class="nav-label">Arquitectura</div>
+		        <a href="/adrs" class="nav-item active"><span>🏗️</span>ADR</a>
+		        <a href="/stack" class="nav-item"><span>⚙️</span>Stack Tecnológico</a>
+		        <a href="/stack/dashboard" class="nav-item"><span>📊</span>Dashboard Arq.</a>
+		        
+		<div class="nav-label">Desarrollo</div>
+        <a href="/tareas" class="nav-item"><span>✅</span>Tareas</a>
+        <a href="/tareas/kanban" class="nav-item"><span>🗂️</span>Kanban</a>
+        <div class="nav-label">Calidad</div>
+        <a href="/defectos" class="nav-item"><span>🐛</span>Defectos</a>
+    </nav>
+    <div class="sidebar-footer">
+        <div>SIGPROD v1.0.0</div>
+        <div style="margin-top:4px;color:var(--green);font-size:11px;">● Sistema activo</div>
+    </div>
+</aside>
+<main class="main">
+    <div class="topbar">
+        <div class="topbar-title" th:text="${titulo}">Requisito</div>
+        <a href="/requisitos" class="btn btn-ghost">← Volver</a>
+    </div>
+    <div class="content">
+        <input type="hidden" id="requisitoId" th:value="${requisito.id}"/>
+        <div class="card">
+            <div class="card-title">📄 Tipo de Requisito</div>
+            <div class="tipo-selector">
+                <div class="tipo-btn" id="btnFuncional" onclick="seleccionarTipo('FUNCIONAL')">
+                    <div class="tipo-icon">⚙️</div>
+                    <div class="tipo-label">Funcional</div>
+                    <div class="tipo-sub">RF - Comportamiento del sistema</div>
+                </div>
+                <div class="tipo-btn" id="btnNoFuncional" onclick="seleccionarTipo('NO_FUNCIONAL')">
+                    <div class="tipo-icon">🔧</div>
+                    <div class="tipo-label">No Funcional</div>
+                    <div class="tipo-sub">RNF - Calidad y restricciones</div>
+                </div>
+            </div>
+            <input type="hidden" id="tipo" th:value="${requisito.tipo}"/>
+        </div>
+        <div class="card">
+            <div class="card-title">📋 Información del Requisito</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Código *</label>
+                    <input type="text" id="codigo" th:value="${requisito.codigo}" placeholder="Ej: RF-01, RNF-05"/>
+                </div>
+                <div class="form-group">
+                    <label>Versión</label>
+                    <input type="number" id="version" th:value="${requisito.version != null ? requisito.version : 1}" min="1"/>
+                </div>
+                <div class="form-group full">
+                    <label>Nombre *</label>
+                    <input type="text" id="nombre" th:value="${requisito.nombre}" placeholder="Nombre descriptivo del requisito"/>
+                </div>
+                <div class="form-group full">
+                    <label>Descripción *</label>
+                    <textarea id="descripcion" placeholder="Descripción detallada del requisito..." th:text="${requisito.descripcion}"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Prioridad</label>
+                    <select id="prioridad">
+                        <option value="ALTA" th:selected="${requisito.prioridad == 'ALTA'}">Alta</option>
+                        <option value="MEDIA" th:selected="${requisito.prioridad == 'MEDIA'}">Media</option>
+                        <option value="BAJA" th:selected="${requisito.prioridad == 'BAJA'}">Baja</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select id="estado">
+                        <option value="BORRADOR" th:selected="${requisito.estado == 'BORRADOR'}">Borrador</option>
+                        <option value="REVISION" th:selected="${requisito.estado == 'REVISION'}">En Revisión</option>
+                        <option value="APROBADO" th:selected="${requisito.estado == 'APROBADO'}">Aprobado</option>
+                        <option value="OBSOLETO" th:selected="${requisito.estado == 'OBSOLETO'}">Obsoleto</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Proyecto</label>
+                    <select id="proyectoId">
+                        <option value="">Seleccionar proyecto...</option>
+                        <option th:each="p : ${proyectos}" th:value="${p.id}" th:text="${p.nombre}" th:selected="${requisito.proyectoId == p.id}">-</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Analista</label>
+                    <input type="text" id="analistaNombre" th:value="${requisito.analistaNombre}" placeholder="Nombre del analista"/>
+                </div>
+                <div class="form-group full">
+                    <label>Fuente</label>
+                    <input type="text" id="fuente" th:value="${requisito.fuente}" placeholder="Ej: Entrevista con cliente, Documento de negocio..."/>
+                </div>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:24px;">
+                <button onclick="guardar()" class="btn btn-primary">💾 Guardar Requisito</button>
+                <a href="/requisitos" class="btn btn-ghost">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+    const tipoInicial = document.getElementById('tipo').value;
+    if (tipoInicial) seleccionarTipo(tipoInicial);
+
+    function seleccionarTipo(tipo) {
+        document.getElementById('tipo').value = tipo;
+        document.getElementById('btnFuncional').className = 'tipo-btn' + (tipo === 'FUNCIONAL' ? ' selected-func' : '');
+        document.getElementById('btnNoFuncional').className = 'tipo-btn' + (tipo === 'NO_FUNCIONAL' ? ' selected-nofunc' : '');
+    }
+
+    function guardar() {
+        const id = document.getElementById('requisitoId').value;
+        const tipo = document.getElementById('tipo').value;
+        if (!tipo) { alert('Selecciona el tipo de requisito'); return; }
+        const data = {
+            codigo: document.getElementById('codigo').value,
+            nombre: document.getElementById('nombre').value,
+            descripcion: document.getElementById('descripcion').value,
+            tipo: tipo,
+            prioridad: document.getElementById('prioridad').value,
+            estado: document.getElementById('estado').value,
+            proyectoId: document.getElementById('proyectoId').value,
+            analistaNombre: document.getElementById('analistaNombre').value,
+            fuente: document.getElementById('fuente').value,
+            version: parseInt(document.getElementById('version').value) || 1
+        };
+        const url = id ? '/api/requisitos/' + id : '/api/requisitos';
+        const method = id ? 'PUT' : 'POST';
+        fetch(url, {method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data)})
+            .then(r => r.json())
+            .then(() => window.location.href = '/requisitos')
+            .catch(e => alert('Error: ' + e));
+    }
+</script>
+</body>
+</html>

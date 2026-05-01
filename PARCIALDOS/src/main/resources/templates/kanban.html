@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Kanban | SIGPROD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        :root{
+            --bg:#0e0e1a;--bg2:#13131f;--card:#1a1a2e;--hover:#1f1f35;
+            --border:#2a2a45;--txt:#e2e8f0;--txt2:#94a3b8;--muted:#64748b;
+            --purple:#7c3aed;--purpleL:#a855f7;--purpleG:rgba(124,58,237,0.15);
+            --green:#10b981;--red:#ef4444;--yellow:#f59e0b;--blue:#3b82f6;
+            --cyan:#06b6d4;--sidebar:250px;
+        }
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);display:flex;min-height:100vh;}
+        .sidebar{width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;height:100vh;overflow-y:auto;}
+        .logo{padding:24px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+        .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--purple),var(--purpleL));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+        .logo-txt{font-size:18px;font-weight:700;background:linear-gradient(135deg,#a855f7,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .logo-sub{font-size:10px;color:var(--muted);}
+        .nav{padding:16px 12px;flex:1;}
+        .nav-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;padding:8px 8px 6px;margin-top:8px;}
+        .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:var(--txt2);font-size:14px;font-weight:500;transition:all .2s;margin-bottom:2px;}
+        .nav-item:hover{background:var(--hover);color:var(--txt);}
+        .nav-item.active{background:var(--purpleG);color:var(--purpleL);border:1px solid rgba(124,58,237,.3);}
+        .sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);}
+        .main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;}
+        .topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+        .topbar-title{font-size:20px;font-weight:700;}
+        .content{padding:24px;overflow-x:auto;}
+        .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:none;transition:all .2s;}
+        .btn-primary{background:var(--purple);color:white;}
+        .btn-primary:hover{background:#6d28d9;}
+        .btn-ghost{background:transparent;color:var(--txt2);border:1px solid var(--border);}
+        .btn-ghost:hover{background:var(--hover);}
+        .kanban-board{display:flex;gap:16px;min-width:max-content;padding-bottom:20px;}
+        .kanban-col{width:280px;flex-shrink:0;}
+        .col-header{padding:12px 14px;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:space-between;}
+        .col-header.todo{background:rgba(100,116,139,.15);border:1px solid rgba(100,116,139,.3);}
+        .col-header.progreso{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);}
+        .col-header.review{background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);}
+        .col-header.testing{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);}
+        .col-header.done{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);}
+        .col-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+        .col-title.todo{color:#94a3b8;}
+        .col-title.progreso{color:#f59e0b;}
+        .col-title.review{color:#a855f7;}
+        .col-title.testing{color:#3b82f6;}
+        .col-title.done{color:#10b981;}
+        .col-count{font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;background:var(--bg2);color:var(--muted);}
+        .col-body{background:var(--bg2);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;padding:10px;min-height:500px;display:flex;flex-direction:column;gap:8px;}
+        .task-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;cursor:pointer;transition:all .2s;position:relative;}
+        .task-card:hover{border-color:var(--purple);transform:translateY(-1px);box-shadow:0 4px 12px rgba(124,58,237,.15);}
+        .task-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:8px 0 0 8px;}
+        .task-card.CRITICA::before{background:var(--red);}
+        .task-card.ALTA::before{background:var(--yellow);}
+        .task-card.MEDIA::before{background:var(--blue);}
+        .task-card.BAJA::before{background:var(--muted);}
+        .task-title{font-size:13px;font-weight:600;margin-bottom:8px;color:var(--txt);}
+        .task-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;}
+        .badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;}
+        .b-blue{background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.3);}
+        .b-purple{background:rgba(124,58,237,.15);color:#a855f7;border:1px solid rgba(124,58,237,.3);}
+        .b-green{background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3);}
+        .b-gray{background:rgba(100,116,139,.15);color:#94a3b8;border:1px solid rgba(100,116,139,.3);}
+        .b-cyan{background:rgba(6,182,212,.15);color:#06b6d4;border:1px solid rgba(6,182,212,.3);}
+        .b-yellow{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3);}
+        .task-assignee{font-size:11px;color:var(--muted);margin-top:6px;}
+        .task-hours{font-size:11px;color:var(--muted);}
+        .empty-col{text-align:center;padding:30px 10px;color:var(--muted);font-size:12px;}
+        .empty-col-icon{font-size:24px;margin-bottom:8px;opacity:.4;}
+        ::-webkit-scrollbar{width:6px;height:6px;}
+        ::-webkit-scrollbar-track{background:var(--bg);}
+        ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+    </style>
+</head>
+<body>
+<aside class="sidebar">
+    <div class="logo">
+        <div class="logo-icon">&#9889;</div>
+        <div><div class="logo-txt">SIGPROD</div><div class="logo-sub">Gesti&#243;n de Proyectos</div></div>
+    </div>
+    <nav class="nav">
+        <div class="nav-label">General</div>
+        <a href="/dashboard" class="nav-item"><span>&#127968;</span> Dashboard</a>
+        <div class="nav-label">Gesti&#243;n</div>
+        <a href="/proyectos" class="nav-item"><span>&#128193;</span> Proyectos</a>
+        <a href="/sprints" class="nav-item"><span>&#127939;</span> Sprints</a>
+        <a href="/historias" class="nav-item"><span>&#128203;</span> Historias</a>
+		<div class="nav-label">Análisis</div>
+		<a href="/requisitos" class="nav-item"><span>📄</span>Requisitos</a>
+		<a href="/casosuso" class="nav-item"><span>🔄</span>Casos de Uso</a>
+		<div class="nav-label">Arquitectura</div>
+		        <a href="/adrs" class="nav-item active"><span>🏗️</span>ADR</a>
+		        <a href="/stack" class="nav-item"><span>⚙️</span>Stack Tecnológico</a>
+		        <a href="/stack/dashboard" class="nav-item"><span>📊</span>Dashboard Arq.</a>
+		        
+		<div class="nav-label">Desarrollo</div>
+        <a href="/tareas" class="nav-item"><span>&#9989;</span> Tareas</a>
+        <a href="/tareas/kanban" class="nav-item active"><span>&#128193;</span> Kanban</a>
+        <div class="nav-label">Calidad</div>
+        <a href="/defectos" class="nav-item"><span>&#128027;</span> Defectos</a>
+    </nav>
+    <div class="sidebar-footer">
+        <div>SIGPROD v1.0.0</div>
+        <div style="margin-top:4px;color:var(--green);font-size:11px;">&#9679; Sistema activo</div>
+    </div>
+</aside>
+ 
+<main class="main">
+    <div class="topbar">
+        <div class="topbar-title">&#128193; Tablero Kanban</div>
+        <div style="display:flex;gap:10px;">
+            <a href="/tareas" class="btn btn-ghost">&#128203; Ver Lista</a>
+            <a href="/tareas/nuevo" class="btn btn-primary">+ Nueva Tarea</a>
+        </div>
+    </div>
+    <div class="content">
+        <div class="kanban-board">
+ 
+            <!-- TO DO -->
+            <div class="kanban-col">
+                <div class="col-header todo">
+                    <span class="col-title todo">TO DO</span>
+                    <span class="col-count" th:text="${tareasTodo.size()}">0</span>
+                </div>
+                <div class="col-body">
+                    <th:block th:each="t : ${tareasTodo}">
+                        <div class="task-card"
+                             th:classappend="${t.prioridad}"
+                             th:data-url="@{/tareas/{id}/editar(id=${t.id})}">
+                            <div class="task-title" th:text="${t.titulo}">-</div>
+                            <div class="task-meta">
+                                <span th:switch="${t.tipo}">
+                                    <span th:case="'FRONTEND'" class="badge b-blue">Frontend</span>
+                                    <span th:case="'BACKEND'" class="badge b-purple">Backend</span>
+                                    <span th:case="'QA'" class="badge b-green">QA</span>
+                                    <span th:case="'DEVOPS'" class="badge b-cyan">DevOps</span>
+                                    <span th:case="*" class="badge b-gray" th:text="${t.tipo}">-</span>
+                                </span>
+                                <span class="task-hours" th:text="${t.horasEstimadas != null ? t.horasEstimadas + 'h' : ''}"></span>
+                            </div>
+                            <div class="task-assignee" th:text="${t.asignadoNombre != null ? t.asignadoNombre : ''}"></div>
+                        </div>
+                    </th:block>
+                    <div th:if="${tareasTodo.size() == 0}" class="empty-col">
+                        <div class="empty-col-icon">&#9203;</div>
+                        <div>Sin tareas</div>
+                    </div>
+                </div>
+            </div>
+ 
+            <!-- EN PROGRESO -->
+            <div class="kanban-col">
+                <div class="col-header progreso">
+                    <span class="col-title progreso">EN PROGRESO</span>
+                    <span class="col-count" th:text="${tareasEnProgreso.size()}">0</span>
+                </div>
+                <div class="col-body">
+                    <th:block th:each="t : ${tareasEnProgreso}">
+                        <div class="task-card"
+                             th:classappend="${t.prioridad}"
+                             th:data-url="@{/tareas/{id}/editar(id=${t.id})}">
+                            <div class="task-title" th:text="${t.titulo}">-</div>
+                            <div class="task-meta">
+                                <span th:switch="${t.tipo}">
+                                    <span th:case="'FRONTEND'" class="badge b-blue">Frontend</span>
+                                    <span th:case="'BACKEND'" class="badge b-purple">Backend</span>
+                                    <span th:case="'QA'" class="badge b-green">QA</span>
+                                    <span th:case="'DEVOPS'" class="badge b-cyan">DevOps</span>
+                                    <span th:case="*" class="badge b-gray" th:text="${t.tipo}">-</span>
+                                </span>
+                                <span class="task-hours" th:text="${t.horasEstimadas != null ? t.horasEstimadas + 'h' : ''}"></span>
+                            </div>
+                            <div class="task-assignee" th:text="${t.asignadoNombre != null ? t.asignadoNombre : ''}"></div>
+                        </div>
+                    </th:block>
+                    <div th:if="${tareasEnProgreso.size() == 0}" class="empty-col">
+                        <div class="empty-col-icon">&#9889;</div>
+                        <div>Sin tareas</div>
+                    </div>
+                </div>
+            </div>
+ 
+            <!-- CODE REVIEW -->
+            <div class="kanban-col">
+                <div class="col-header review">
+                    <span class="col-title review">CODE REVIEW</span>
+                    <span class="col-count" th:text="${tareasReview.size()}">0</span>
+                </div>
+                <div class="col-body">
+                    <th:block th:each="t : ${tareasReview}">
+                        <div class="task-card"
+                             th:classappend="${t.prioridad}"
+                             th:data-url="@{/tareas/{id}/editar(id=${t.id})}">
+                            <div class="task-title" th:text="${t.titulo}">-</div>
+                            <div class="task-meta">
+                                <span th:switch="${t.tipo}">
+                                    <span th:case="'FRONTEND'" class="badge b-blue">Frontend</span>
+                                    <span th:case="'BACKEND'" class="badge b-purple">Backend</span>
+                                    <span th:case="'QA'" class="badge b-green">QA</span>
+                                    <span th:case="'DEVOPS'" class="badge b-cyan">DevOps</span>
+                                    <span th:case="*" class="badge b-gray" th:text="${t.tipo}">-</span>
+                                </span>
+                                <span class="task-hours" th:text="${t.horasEstimadas != null ? t.horasEstimadas + 'h' : ''}"></span>
+                            </div>
+                            <div class="task-assignee" th:text="${t.asignadoNombre != null ? t.asignadoNombre : ''}"></div>
+                        </div>
+                    </th:block>
+                    <div th:if="${tareasReview.size() == 0}" class="empty-col">
+                        <div class="empty-col-icon">&#128269;</div>
+                        <div>Sin tareas</div>
+                    </div>
+                </div>
+            </div>
+ 
+            <!-- TESTING -->
+            <div class="kanban-col">
+                <div class="col-header testing">
+                    <span class="col-title testing">TESTING</span>
+                    <span class="col-count" th:text="${tareasTesting.size()}">0</span>
+                </div>
+                <div class="col-body">
+                    <th:block th:each="t : ${tareasTesting}">
+                        <div class="task-card"
+                             th:classappend="${t.prioridad}"
+                             th:data-url="@{/tareas/{id}/editar(id=${t.id})}">
+                            <div class="task-title" th:text="${t.titulo}">-</div>
+                            <div class="task-meta">
+                                <span th:switch="${t.tipo}">
+                                    <span th:case="'FRONTEND'" class="badge b-blue">Frontend</span>
+                                    <span th:case="'BACKEND'" class="badge b-purple">Backend</span>
+                                    <span th:case="'QA'" class="badge b-green">QA</span>
+                                    <span th:case="'DEVOPS'" class="badge b-cyan">DevOps</span>
+                                    <span th:case="*" class="badge b-gray" th:text="${t.tipo}">-</span>
+                                </span>
+                                <span class="task-hours" th:text="${t.horasEstimadas != null ? t.horasEstimadas + 'h' : ''}"></span>
+                            </div>
+                            <div class="task-assignee" th:text="${t.asignadoNombre != null ? t.asignadoNombre : ''}"></div>
+                        </div>
+                    </th:block>
+                    <div th:if="${tareasTesting.size() == 0}" class="empty-col">
+                        <div class="empty-col-icon">&#129514;</div>
+                        <div>Sin tareas</div>
+                    </div>
+                </div>
+            </div>
+ 
+            <!-- DONE -->
+            <div class="kanban-col">
+                <div class="col-header done">
+                    <span class="col-title done">DONE</span>
+                    <span class="col-count" th:text="${tareasDone.size()}">0</span>
+                </div>
+                <div class="col-body">
+                    <th:block th:each="t : ${tareasDone}">
+                        <div class="task-card"
+                             th:classappend="${t.prioridad}"
+                             th:data-url="@{/tareas/{id}/editar(id=${t.id})}">
+                            <div class="task-title" style="opacity:.8;" th:text="${t.titulo}">-</div>
+                            <div class="task-meta">
+                                <span th:switch="${t.tipo}">
+                                    <span th:case="'FRONTEND'" class="badge b-blue">Frontend</span>
+                                    <span th:case="'BACKEND'" class="badge b-purple">Backend</span>
+                                    <span th:case="'QA'" class="badge b-green">QA</span>
+                                    <span th:case="'DEVOPS'" class="badge b-cyan">DevOps</span>
+                                    <span th:case="*" class="badge b-gray" th:text="${t.tipo}">-</span>
+                                </span>
+                                <span class="task-hours" th:text="${t.horasEstimadas != null ? t.horasEstimadas + 'h' : ''}"></span>
+                            </div>
+                            <div class="task-assignee" th:text="${t.asignadoNombre != null ? t.asignadoNombre : ''}"></div>
+                        </div>
+                    </th:block>
+                    <div th:if="${tareasDone.size() == 0}" class="empty-col">
+                        <div class="empty-col-icon">&#9989;</div>
+                        <div>Sin tareas</div>
+                    </div>
+                </div>
+            </div>
+ 
+        </div>
+    </div>
+</main>
+ 
+<script>
+    // Navegar al editar cuando se hace click en una tarjeta
+    document.querySelectorAll('.task-card').forEach(function(card) {
+        card.addEventListener('click', function() {
+            var url = this.getAttribute('data-url');
+            if (url) window.location.href = url;
+        });
+    });
+</script>
+</body>
+</html>
