@@ -19,13 +19,15 @@ public class SprintWebControlador {
 
     @GetMapping("/nuevo")
     public String formularioNuevo(Model model) {
-        model.addAttribute("sprint", new Sprint());
+        Sprint sprint = new Sprint();
+        sprint.setEstado("PLANIFICADO");
+        sprint.setCapacidadHoras(80);
+        model.addAttribute("sprint", sprint);
         model.addAttribute("proyectos", proyectoRepo.findAll());
         model.addAttribute("titulo", "Nuevo Sprint");
         model.addAttribute("currentPage", "sprints");
         return "formSprint";
     }
-
     @GetMapping("/{id}")
     public String detalle(@PathVariable String id, Model model) {
         Sprint sprint = sprintRepo.findById(id).orElseThrow();
