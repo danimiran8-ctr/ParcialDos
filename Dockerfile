@@ -1,7 +1,7 @@
 FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
 RUN apt-get update && apt-get install -y maven
-COPY . .
+COPY PARCIALDOS/ .
 RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:21-jre
